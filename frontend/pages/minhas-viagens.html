@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leva Leve | Minhas viagens</title>
+    <meta name="description" content="Acompanhe suas viagens ativas, concluídas e solicitadas." />
+    <link rel="icon" type="image/svg+xml" href="../assets/brand-icon.svg?v=2" />
+    <link rel="shortcut icon" type="image/svg+xml" href="../assets/brand-icon.svg?v=2" />
+    <link rel="apple-touch-icon" href="../assets/brand-icon.svg?v=2" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/css/money.css">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#ECFDF5",
+                100: "#D1FAE5",
+                500: "#10B981",
+                600: "#059669",
+                700: "#047857",
+              },
+              slateDeep: "#081528",
+            },
+            fontFamily: {
+              title: ["Sora", "sans-serif"],
+              body: ["DM Sans", "sans-serif"],
+            },
+            boxShadow: {
+              card: "0 4px 14px rgba(15, 23, 42, 0.08)",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="min-h-screen bg-slate-100 font-body text-slate-900 antialiased">
+    <header class="w-full border-b border-slate-200 bg-white/95 backdrop-blur">
+      <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4 md:px-8">
+        <a href="../index.html" class="inline-flex items-center gap-3">
+          <img src="../assets/brand-icon.svg" alt="Leva Leve" class="h-9 w-9" />
+          <span class="font-title text-xl font-bold tracking-tight text-brand-700">Leva Leve</span>
+        </a>
+        <div class="hidden items-center gap-5 text-sm text-slate-600 md:flex">
+          <a href="solicitar-transporte.html" class="font-medium transition hover:text-slate-900">Nova solicitação</a>
+          <a href="alterar-endereco.html" class="font-medium transition hover:text-slate-900">Alterar endereço</a>
+          <span class="h-6 w-px bg-slate-200"></span>
+          <div class="text-right leading-tight">
+            <p id="user-name" class="text-sm font-bold text-slate-900">Joao Silva</p>
+            <p id="user-email" class="text-xs text-slate-500">joao@email.com</p>
+          </div>
+          <span id="user-avatar" class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-600 text-xs font-bold text-white">JS</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-6xl px-6 py-10 lg:px-8">
+      <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.3em] text-brand-700">Minhas viagens</p>
+          <h1 class="mt-2 font-title text-4xl font-extrabold tracking-tight text-slate-900">Viagens ativas da sua conta</h1>
+          <p class="mt-2 max-w-2xl text-lg text-slate-600">Veja suas solicitações, acompanhe o status e abra cada viagem para revisar os detalhes.</p>
+        </div>
+        <a href="solicitar-transporte.html" class="inline-flex items-center justify-center rounded-lg bg-brand-600 px-5 py-3 font-bold text-white transition hover:bg-brand-700">Nova solicitação</a>
+      </div>
+
+      <section class="mt-6 grid gap-4 md:grid-cols-3">
+        <article class="rounded-2xl bg-slateDeep p-5 text-white shadow-card">
+          <p class="text-sm text-slate-300">Solicitações ativas</p>
+          <p id="stat-active" class="mt-2 font-title text-4xl font-extrabold">--</p>
+          <p class="mt-1 text-sm text-slate-300">Pedidos criados por você e ainda em andamento</p>
+        </article>
+        <article class="rounded-2xl bg-white p-5 shadow-card">
+          <p class="text-sm text-slate-500">Concluídas</p>
+          <p id="stat-completed" class="mt-2 font-title text-4xl font-extrabold text-brand-700">--</p>
+          <p class="mt-1 text-sm text-slate-500">Viagens finalizadas no histórico</p>
+        </article>
+        <article class="rounded-2xl bg-white p-5 shadow-card">
+          <p class="text-sm text-slate-500">Total solicitado</p>
+          <p id="stat-total" class="mt-2 font-title text-4xl font-extrabold text-slate-900">--</p>
+          <p class="mt-1 text-sm text-slate-500">Somatório de valores das suas corridas</p>
+        </article>
+      </section>
+
+      <section class="mt-6 rounded-[2rem] border border-slate-200 bg-white p-5 shadow-card md:p-6">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <h2 class="font-title text-2xl font-extrabold text-slate-900">Viagens da conta</h2>
+            <p class="mt-1 text-sm text-slate-500">Abra uma viagem para ver os detalhes no mesmo estilo do painel do motorista.</p>
+          </div>
+          <span class="rounded-full bg-brand-50 px-3 py-1 text-sm font-semibold text-brand-700">Atualizado em tempo real</span>
+        </div>
+
+        <div class="mt-5">
+          <h3 class="font-title text-xl font-extrabold text-slate-900">Viagens ativas</h3>
+          <div id="active-trips-list" class="mt-3 grid gap-4"></div>
+        </div>
+
+        <div class="mt-8">
+          <h3 class="font-title text-xl font-extrabold text-slate-900">Historico</h3>
+          <p class="mt-1 text-sm text-slate-500">Viagens canceladas e concluidas ficam registradas aqui.</p>
+          <div id="history-trips-list" class="mt-3 grid gap-4"></div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module">
+      import { request, getStoredUser } from '../assets/js/api.js';
+
+      const activeTripsList = document.getElementById('active-trips-list');
+      const historyTripsList = document.getElementById('history-trips-list');
+      const statActive = document.getElementById('stat-active');
+      const statCompleted = document.getElementById('stat-completed');
+      const statTotal = document.getElementById('stat-total');
+      const user = getStoredUser();
+
+      if (user) {
+        document.getElementById('user-name').textContent = user.name || 'Cliente';
+        document.getElementById('user-email').textContent = user.email || '';
+        const initials = (user.name || 'CL').split(' ').slice(0, 2).map((part) => part[0]).join('').toUpperCase();
+        document.getElementById('user-avatar').textContent = initials;
+      }
+
+      function statusLabel(status) {
+        const map = {
+          available: { label: 'Aguardando motorista', classes: 'bg-amber-100 text-amber-800' },
+          accepted: { label: 'Aceita', classes: 'bg-blue-100 text-blue-700' },
+          completed: { label: 'Concluída', classes: 'bg-emerald-100 text-emerald-700' },
+          canceled: { label: 'Cancelada', classes: 'bg-red-100 text-red-700' },
+        };
+        return map[status] || { label: status || 'Desconhecido', classes: 'bg-slate-200 text-slate-700' };
+      }
+
+      function tripCard(trip, options = {}) {
+        const status = statusLabel(trip.status);
+        const isHistory = options.history === true;
+        const wrapperClass = isHistory
+          ? trip.status === 'canceled'
+            ? 'border-red-200 bg-red-50'
+            : 'border-emerald-200 bg-emerald-50'
+          : 'border-slate-200 bg-slate-50';
+
+        const cancelButton = !isHistory && (trip.status === 'available' || trip.status === 'accepted')
+          ? `<button data-cancel-request="${trip.id}" class="rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-50">Cancelar viagem</button>`
+          : '';
+
+        const openLink = trip.status === 'accepted'
+          ? `<a href="acompanhamento-corrida.html?request=${trip.id}" class="inline-flex rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Ver acompanhamento</a>`
+          : `<a href="procurando-motorista.html?request=${trip.id}" class="inline-flex rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Ver acompanhamento</a>`;
+
+        return `
+          <article class="block rounded-2xl border ${wrapperClass} p-5 transition hover:shadow-md">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <h3 class="font-title text-2xl font-extrabold text-slate-900">${trip.title}</h3>
+                  <span class="rounded-full px-3 py-1 text-xs font-bold ${status.classes}">${status.label}</span>
+                </div>
+                <p class="mt-1 text-sm text-slate-500">${trip.client_since} • ${trip.category}</p>
+                <p class="mt-3 text-sm text-slate-600">${trip.pickup_address}</p>
+                <p class="text-sm text-slate-600">→ ${trip.dropoff_address}</p>
+                <div class="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
+                  ${trip.helper_required ? '<span class="rounded-full bg-violet-100 px-2 py-1 text-violet-700">Com ajudante</span>' : '<span class="rounded-full bg-slate-200 px-2 py-1 text-slate-700">Sem ajudante</span>'}
+                  <span class="rounded-full bg-blue-100 px-2 py-1 text-blue-700">${trip.distance_km.toFixed(1)} km</span>
+                  <span class="rounded-full bg-orange-100 px-2 py-1 text-orange-700">${trip.eta_minutes} min</span>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="font-title text-3xl font-extrabold text-brand-700 money-display">R$ ${Number(trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                <p class="mt-1 text-sm text-slate-500">${isHistory ? 'Registrada no histórico' : 'Clique para ver o acompanhamento'}</p>
+                <div class="mt-4 flex justify-end gap-2">
+                  ${isHistory ? '' : openLink}
+                  ${cancelButton}
+                </div>
+              </div>
+            </div>
+          </article>
+        `;
+      }
+
+      async function loadTrips() {
+        try {
+          const trips = await request('/client/requests/me');
+          const activeTrips = trips.filter((trip) => trip.status === 'available' || trip.status === 'accepted');
+          const historyTrips = trips.filter((trip) => trip.status === 'completed' || trip.status === 'canceled');
+          const activeCount = activeTrips.length;
+          const completedCount = trips.filter((trip) => trip.status === 'completed').length;
+          const total = trips.reduce((sum, trip) => sum + Number(trip.price || 0), 0);
+
+          statActive.textContent = String(activeCount);
+          statCompleted.textContent = String(completedCount);
+          statTotal.textContent = `R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+          activeTripsList.innerHTML = activeTrips.length
+            ? activeTrips.map((trip) => tripCard(trip)).join('')
+            : '<div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-500">Nenhuma viagem ativa no momento.</div>';
+
+          historyTripsList.innerHTML = historyTrips.length
+            ? historyTrips.map((trip) => tripCard(trip, { history: true })).join('')
+            : '<div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-500">Nenhuma viagem concluída ou cancelada ainda.</div>';
+
+          activeTripsList.querySelectorAll('[data-cancel-request]').forEach((button) => {
+            button.addEventListener('click', async (event) => {
+              event.preventDefault();
+              event.stopPropagation();
+
+              const requestId = button.getAttribute('data-cancel-request');
+              try {
+                await request(`/client/requests/${requestId}/cancel`, { method: 'POST' });
+                await loadTrips();
+              } catch (error) {
+                alert(error.message || 'Nao foi possivel cancelar a viagem.');
+              }
+            });
+          });
+        } catch (error) {
+          activeTripsList.innerHTML = `<div class="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">${error.message}</div>`;
+          historyTripsList.innerHTML = '';
+        }
+      }
+
+      loadTrips();
+    </script>
+  </body>
+</html>

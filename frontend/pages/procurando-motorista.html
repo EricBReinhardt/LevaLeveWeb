@@ -75,6 +75,10 @@
     </header>
 
     <main class="mx-auto flex max-w-5xl flex-col items-center px-6 py-14 text-center md:py-20">
+      <a href="minhas-viagens.html" class="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20">
+        <span aria-hidden="true">←</span>
+        Voltar para minhas viagens
+      </a>
       <div class="relative flex h-32 w-32 items-center justify-center">
         <span class="absolute h-32 w-32 rounded-full bg-white/20 animate-pulseRing"></span>
         <span class="absolute h-24 w-24 rounded-full bg-white/20 animate-pulseRing" style="animation-delay: 0.7s"></span>
@@ -88,6 +92,12 @@
 
       <h1 class="mt-8 font-title text-5xl font-extrabold tracking-tight">Procurando motorista...</h1>
       <p class="mt-4 text-2xl text-emerald-50">Estamos encontrando o melhor motorista disponivel para voce</p>
+
+      <div id="acceptance-notification" class="mt-6 hidden w-full max-w-2xl rounded-2xl border border-white/20 bg-white/15 px-5 py-4 text-left backdrop-blur-sm">
+        <p class="text-xs font-bold uppercase tracking-[0.28em] text-emerald-100">Notificacao</p>
+        <p id="acceptance-title" class="mt-1 font-title text-2xl font-extrabold">Corrida aceita</p>
+        <p id="acceptance-message" class="mt-1 text-sm text-emerald-50">O motorista aceitou sua corrida.</p>
+      </div>
 
       <div class="mt-10 grid w-full max-w-3xl gap-4 md:grid-cols-3">
         <article class="rounded-2xl bg-white/10 p-6 backdrop-blur-sm animate-cardFloat">
@@ -145,6 +155,48 @@
         <div class="h-full w-24 rounded-md bg-white animate-progressMove"></div>
       </div>
     </main>
+
+    <script type="module">
+      import { request } from '../assets/js/api.js';
+
+      const params = new URLSearchParams(window.location.search);
+      const requestId = params.get('request');
+      const notificationBox = document.getElementById('acceptance-notification');
+      const notificationTitle = document.getElementById('acceptance-title');
+      const notificationMessage = document.getElementById('acceptance-message');
+
+      let redirecting = false;
+
+      function showNotification(notification) {
+        notificationTitle.textContent = notification?.title || 'Corrida aceita';
+        notificationMessage.textContent = notification?.message || 'Um motorista aceitou sua corrida.';
+        notificationBox.classList.remove('hidden');
+      }
+
+      async function pollRequestStatus() {
+        if (!requestId || redirecting) {
+          return;
+        }
+
+        try {
+          const trip = await request(`/client/requests/${requestId}`);
+          if (trip.status === 'accepted') {
+            const notifications = await request(`/client/notifications/me?request_id=${requestId}`);
+            showNotification(notifications.items?.[0] || { title: 'Corrida aceita', message: 'Um motorista aceitou sua corrida.' });
+            sessionStorage.setItem('LEVA_LEVE_LAST_NOTIFICATION', JSON.stringify(notifications.items?.[0] || { title: 'Corrida aceita', message: 'Um motorista aceitou sua corrida.' }));
+            redirecting = true;
+            setTimeout(() => {
+              window.location.href = `acompanhamento-corrida.html?request=${requestId}`;
+            }, 1200);
+          }
+        } catch (error) {
+          console.warn(error.message);
+        }
+      }
+
+      pollRequestStatus();
+      setInterval(pollRequestStatus, 4000);
+    </script>
   </body>
 </html>
 

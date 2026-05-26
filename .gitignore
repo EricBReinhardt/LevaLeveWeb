@@ -23,3 +23,15 @@ node_modules/
 dist/
 build/
 .cache/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# Backend local
+backend/.env
+backend/.pytest_cache/
+/db-login-notes.txt

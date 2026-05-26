@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leva Leve | Nova solicitacao</title>
+    <meta name="description" content="Tela de aceite rapido de nova solicitacao com contagem regressiva." />
+    <link rel="icon" type="image/svg+xml" href="../assets/brand-icon.svg?v=2" />
+    <link rel="shortcut icon" type="image/svg+xml" href="../assets/brand-icon.svg?v=2" />
+    <link rel="apple-touch-icon" href="../assets/brand-icon.svg?v=2" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Sora:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/css/money.css">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                500: "#10B981",
+                600: "#059669",
+              },
+            },
+            fontFamily: {
+              title: ["Sora", "sans-serif"],
+              body: ["DM Sans", "sans-serif"],
+            },
+            boxShadow: {
+              card: "0 10px 24px rgba(15, 23, 42, 0.24)",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-blue-700 font-body text-white antialiased">
+    <header class="w-full border-b border-white/20 bg-white/10 backdrop-blur">
+      <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4 md:px-8">
+        <div class="flex items-center gap-3">
+          <img src="../assets/brand-icon.svg" alt="Leva Leve" class="h-8 w-8 rounded-lg bg-white/20 p-1" />
+          <div>
+            <p class="font-title text-xl font-bold">Leva Leve</p>
+            <p class="text-xs text-blue-100">Painel do motorista</p>
+          </div>
+        </div>
+        <span id="timer-badge" class="rounded-xl bg-red-500 px-4 py-1.5 font-title text-2xl font-bold text-white">30s</span>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-6xl px-6 py-10 md:px-8">
+      <div class="mx-auto max-w-2xl text-center">
+        <div class="mx-auto inline-flex h-20 w-20 items-center justify-center rounded-full bg-brand-500">
+          <svg viewBox="0 0 24 24" fill="none" class="h-10 w-10" aria-hidden="true">
+            <path d="M12 3L4 7.5V16.5L12 21L20 16.5V7.5L12 3Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M4 7.5L12 12L20 7.5" stroke="currentColor" stroke-width="2"/>
+          </svg>
+        </div>
+        <h1 class="mt-5 font-title text-5xl font-extrabold">Nova Solicitacao!</h1>
+        <p class="mt-2 text-2xl text-blue-100">Voce tem <span id="timer-text">30</span> segundos para responder</p>
+        <div class="mx-auto mt-4 h-2 w-80 overflow-hidden rounded-full bg-black/30">
+          <div id="timer-bar" class="h-full w-full rounded-full bg-black/70 transition-[width] duration-1000"></div>
+        </div>
+      </div>
+
+      <div class="mt-8 grid gap-4 lg:grid-cols-12">
+        <section class="rounded-2xl bg-white p-5 text-slate-900 shadow-card lg:col-span-8">
+          <div class="flex items-start justify-between border-b border-slate-200 pb-3">
+            <div>
+              <p id="client-name" class="font-title text-2xl font-extrabold">Carregando...</p>
+              <p id="client-since" class="text-sm text-slate-500">--</p>
+            </div>
+            <div class="text-right">
+              <p id="trip-price" class="font-title text-3xl font-extrabold text-brand-600 money-display">R$ --</p>
+              <p class="text-sm text-slate-500">Pagamento garantido</p>
+            </div>
+          </div>
+
+          <div class="mt-3 border-b border-slate-200 pb-3 text-sm">
+            <p class="text-slate-500">Distancia ate o cliente</p>
+            <p id="distance-summary" class="text-2xl font-bold">-- km • -- minutos</p>
+          </div>
+
+          <div class="mt-3 rounded-xl bg-slate-50 p-4">
+            <div class="flex gap-3">
+              <span class="mt-2 h-3 w-3 rounded-full bg-brand-600"></span>
+              <div>
+                <p class="font-bold">Ponto de coleta</p>
+                <p id="pickup-address-line" class="text-sm text-slate-600">Carregando...</p>
+                <p id="pickup-city-line" class="text-sm text-slate-500">--</p>
+              </div>
+            </div>
+            <div class="ml-1 mt-2 h-8 w-px bg-slate-300"></div>
+            <div class="flex gap-3">
+              <span class="mt-2 h-3 w-3 rounded-full bg-red-500"></span>
+              <div>
+                <p class="font-bold">Ponto de entrega</p>
+                <p id="dropoff-address-line" class="text-sm text-slate-600">--</p>
+                <p id="dropoff-city-line" class="text-sm text-slate-500">--</p>
+                <p id="dropoff-distance-line" class="text-sm font-semibold text-brand-700">📍 -- km de distancia</p>
+              </div>
+            </div>
+          </div>
+
+          <h2 class="mt-4 font-title text-2xl font-extrabold">Detalhes do transporte</h2>
+          <div class="mt-2 grid gap-2 sm:grid-cols-3">
+            <div class="rounded-xl border border-blue-200 bg-blue-50 p-3">
+              <p id="item-title" class="font-bold">Carregando...</p>
+              <p id="item-description" class="text-xs text-slate-500">--</p>
+            </div>
+            <div class="rounded-xl border border-violet-200 bg-violet-50 p-3">
+              <p id="helper-info" class="font-bold">--</p>
+              <p class="text-xs text-slate-500">+ <span class="money-display small">R$ 30,00</span></p>
+            </div>
+            <div class="rounded-xl border border-orange-200 bg-orange-50 p-3">
+              <p id="eta-info" class="font-bold">--</p>
+              <p class="text-xs text-slate-500">Estimado</p>
+            </div>
+          </div>
+
+          <div class="mt-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-brand-700">
+            ✓ Seguro incluso • Cobertura ate R$ 5.000 em caso de danos
+          </div>
+        </section>
+
+        <aside class="space-y-3 lg:col-span-4">
+          <section class="rounded-2xl bg-white p-4 text-slate-900 shadow-card">
+            <h3 class="font-title text-xl font-extrabold">Ganhos estimados</h3>
+            <div class="mt-3 rounded-xl bg-emerald-50 p-3">
+              <p class="text-xs text-slate-500">Voce vai receber</p>
+              <p id="estimated-earnings" class="font-title text-3xl font-extrabold text-brand-600 money-display">R$ --</p>
+              <ul class="mt-2 text-xs text-slate-600">
+                <li id="earnings-distance">• Distancia: -- km</li>
+                <li id="earnings-time">• Tempo estimado: -- min</li>
+                <li id="earnings-helper">• Com ajudante incluso</li>
+              </ul>
+            </div>
+            <div class="mt-3 space-y-2">
+              <button id="aceitar-viagem" type="button" class="w-full rounded-lg bg-brand-600 px-4 py-3 font-bold text-white transition hover:bg-brand-500">✓ Aceitar Viagem</button>
+              <button id="recusar-viagem" type="button" class="w-full rounded-lg border border-red-300 bg-white px-4 py-3 font-bold text-red-500 transition hover:bg-red-50">✕ Recusar</button>
+            </div>
+          </section>
+
+          <section class="rounded-2xl bg-white p-4 text-slate-900 shadow-card">
+            <h3 class="font-title text-xl font-extrabold">Informacoes adicionais</h3>
+            <ul class="mt-2 text-sm text-slate-600">
+              <li>• Cliente verificado com boas avaliacoes</li>
+              <li>• Elevador disponivel nos dois locais</li>
+              <li>• Rota sem pedagios</li>
+            </ul>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <script type="module">
+      import { request } from '../assets/js/api.js';
+
+      const params = new URLSearchParams(window.location.search);
+      const requestId = params.get('request');
+
+      async function loadRequest() {
+        try {
+          let trip = null;
+          if (requestId) {
+            trip = await request(`/driver/requests/${requestId}`);
+          } else {
+            const list = await request('/driver/requests');
+            trip = list.items[0];
+          }
+
+          if (!trip) {
+            return;
+          }
+
+          document.getElementById('client-name').textContent = trip.client_name || 'Cliente';
+          document.getElementById('client-since').textContent = trip.client_since || '';
+          document.getElementById('trip-price').textContent = `R$ ${Number(trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+          document.getElementById('distance-summary').textContent = `${Number(trip.distance_km).toFixed(1)} km • ${trip.eta_minutes} minutos`;
+
+          const pickupParts = trip.pickup_address.split(' - ');
+          const dropoffParts = trip.dropoff_address.split(' - ');
+          document.getElementById('pickup-address-line').textContent = pickupParts[0] || trip.pickup_address;
+          document.getElementById('pickup-city-line').textContent = pickupParts.slice(1).join(' - ') || '';
+          document.getElementById('dropoff-address-line').textContent = dropoffParts[0] || trip.dropoff_address;
+          document.getElementById('dropoff-city-line').textContent = dropoffParts.slice(1).join(' - ') || '';
+          document.getElementById('dropoff-distance-line').textContent = `📍 ${Number(trip.distance_km).toFixed(1)} km de distancia`;
+
+          document.getElementById('item-title').textContent = trip.title;
+          document.getElementById('item-description').textContent = trip.item_description;
+          document.getElementById('helper-info').textContent = trip.helper_required ? 'Com ajudante' : 'Sem ajudante';
+          document.getElementById('eta-info').textContent = `${trip.eta_minutes} min`;
+          document.getElementById('estimated-earnings').textContent = `R$ ${Number(trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+          document.getElementById('earnings-distance').textContent = `• Distancia: ${Number(trip.distance_km).toFixed(1)} km`;
+          document.getElementById('earnings-time').textContent = `• Tempo estimado: ${trip.eta_minutes} min`;
+          document.getElementById('earnings-helper').textContent = trip.helper_required ? '• Com ajudante incluso' : '• Sem ajudante incluso';
+        } catch (error) {
+          console.warn(error.message);
+        }
+      }
+
+      loadRequest();
+    </script>
+
+    <script>
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        const requestId = params.get('request');
+        let remaining = 30;
+        const timerBadge = document.getElementById("timer-badge");
+        const timerText = document.getElementById("timer-text");
+        const timerBar = document.getElementById("timer-bar");
+        const acceptBtn = document.getElementById("aceitar-viagem");
+        const refuseBtn = document.getElementById("recusar-viagem");
+        let finished = false;
+
+        function goToProfile() {
+          window.location.href = "area-motorista.html";
+        }
+
+        function goToTripScreen() {
+          window.location.href = `viagem-andamento.html?request=${requestId}`;
+        }
+
+        function render() {
+          timerBadge.textContent = `${remaining}s`;
+          timerText.textContent = String(remaining);
+          timerBar.style.width = `${(remaining / 30) * 100}%`;
+        }
+
+        render();
+
+        const intervalId = setInterval(function () {
+          if (finished) {
+            clearInterval(intervalId);
+            return;
+          }
+
+          remaining -= 1;
+          render();
+
+          if (remaining <= 0) {
+            finished = true;
+            clearInterval(intervalId);
+            goToProfile();
+          }
+        }, 1000);
+
+        acceptBtn.addEventListener("click", async function () {
+          if (!requestId) {
+            return;
+          }
+
+          try {
+            acceptBtn.disabled = true;
+            acceptBtn.textContent = "Aceitando...";
+            const result = await request(`/driver/requests/${requestId}/accept`, {
+              method: 'POST',
+            });
+            finished = true;
+            clearInterval(intervalId);
+            if (result?.notification) {
+              sessionStorage.setItem('LEVA_LEVE_LAST_NOTIFICATION', JSON.stringify(result.notification));
+            }
+            goToTripScreen();
+          } catch (error) {
+            acceptBtn.disabled = false;
+            acceptBtn.textContent = "✓ Aceitar Viagem";
+            alert(error.message || 'Nao foi possivel aceitar a viagem.');
+          }
+        });
+
+        refuseBtn.addEventListener("click", function () {
+          finished = true;
+          clearInterval(intervalId);
+          goToProfile();
+        });
+      })();
+    </script>
+  </body>
+</html>

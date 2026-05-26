@@ -1,0 +1,797 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leva Leve | Transporte de móveis e objetos grandes</title>
+    <meta
+      name="description"
+      content="Transporte de móveis e objetos grandes com preço fixo, segurança e rastreamento em tempo real."
+    />
+    <link rel="icon" type="image/svg+xml" href="assets/brand-icon.svg?v=2" />
+    <link rel="shortcut icon" type="image/svg+xml" href="assets/brand-icon.svg?v=2" />
+    <link rel="apple-touch-icon" href="assets/brand-icon.svg?v=2" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Sora:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/css/money.css">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#ECFDF5",
+                100: "#D1FAE5",
+                500: "#10B981",
+                600: "#059669",
+                700: "#047857",
+              },
+              ocean: {
+                500: "#0EA5E9",
+                600: "#0284C7",
+                700: "#0369A1",
+              },
+              slateDeep: "#091A35",
+            },
+            fontFamily: {
+              title: ["Sora", "sans-serif"],
+              body: ["DM Sans", "sans-serif"],
+            },
+            boxShadow: {
+              soft: "0 16px 45px -20px rgba(15, 23, 42, 0.35)",
+            },
+            keyframes: {
+              riseIn: {
+                "0%": { opacity: "0", transform: "translateY(24px)" },
+                "100%": { opacity: "1", transform: "translateY(0)" },
+              },
+              glowPulse: {
+                "0%, 100%": { boxShadow: "0 0 0 0 rgba(16, 185, 129, 0.18)" },
+                "50%": { boxShadow: "0 0 0 12px rgba(16, 185, 129, 0)" },
+              },
+            },
+            animation: {
+              riseIn: "riseIn 700ms ease-out both",
+              glowPulse: "glowPulse 2.6s ease-in-out infinite",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        background: radial-gradient(circle at top right, #def7ec 0%, #f8fafc 38%, #f3f4f6 100%);
+      }
+    </style>
+  </head>
+  <body class="font-body text-slate-900 antialiased">
+    <header class="w-full border-b border-slate-200 bg-white/95 backdrop-blur">
+      <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4 md:px-8">
+        <a href="index.html" class="inline-flex items-center gap-3">
+          <img src="assets/brand-icon.svg" alt="Leva Leve" class="h-9 w-9" />
+          <span class="font-title text-xl font-bold tracking-tight text-brand-700">Leva Leve</span>
+        </a>
+        <nav class="hidden items-center gap-8 text-sm font-medium text-slate-600 md:flex">
+          <a href="#como-funciona" class="transition hover:text-slate-900">Como funciona</a>
+          <a href="#como-funciona-motorista" class="transition hover:text-slate-900">Para motoristas</a>
+          <button
+            id="abrir-login-cliente"
+            type="button"
+            class="rounded-lg border border-brand-500/30 bg-brand-600 px-4 py-2 font-semibold text-white transition hover:bg-brand-700"
+            >Entrar</button>
+          <button
+            id="abrir-login-motorista"
+            type="button"
+            class="rounded-lg border border-brand-600 bg-brand-600 px-4 py-2 font-semibold text-white transition hover:bg-brand-700"
+            >Area do Motorista</button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="overflow-hidden bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 py-14 text-white md:py-20">
+        <div class="mx-auto grid max-w-6xl gap-12 px-6 md:grid-cols-2 md:items-center md:px-10">
+          <div class="animate-riseIn">
+            <h1 class="font-title text-4xl font-extrabold leading-tight md:text-5xl">
+              Transporte de móveis e objetos grandes
+            </h1>
+            <p class="mt-5 max-w-xl text-lg text-emerald-50">
+              Rápido, seguro e com preço fixo. Sem surpresas.
+            </p>
+            <div class="mt-8 flex flex-wrap gap-4">
+              <a
+                href="pages/solicitar-transporte.html"
+                class="rounded-lg bg-white px-6 py-3 text-sm font-bold text-brand-700 shadow-soft transition hover:scale-[1.02]"
+                >Solicitar Transporte Agora</a
+              >
+              <a
+                href="#como-funciona"
+                class="rounded-lg border border-white/50 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
+                >Ver Como Funciona</a
+              >
+            </div>
+            <div class="mt-9 grid grid-cols-3 gap-5 text-sm">
+              <div>
+                <p class="font-title text-2xl font-extrabold">50mil+</p>
+                <p class="text-emerald-100">Transportes realizados</p>
+              </div>
+              <div>
+                <p class="font-title text-2xl font-extrabold">4.9+</p>
+                <p class="text-emerald-100">Avaliação média</p>
+              </div>
+              <div>
+                <p class="font-title text-2xl font-extrabold">2mil+</p>
+                <p class="text-emerald-100">Motoristas ativos</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="animate-riseIn md:[animation-delay:120ms]">
+            <div class="rounded-2xl bg-white/12 p-5 shadow-soft backdrop-blur-sm md:p-7">
+              <div class="rounded-2xl bg-slate-100 p-6 text-slate-900 shadow-soft">
+                <h2 class="font-title text-2xl font-extrabold">Por que Leva Leve?</h2>
+                <ul class="mt-6 space-y-4 text-sm">
+                  <li class="flex gap-3">
+                    <span class="mt-0.5 h-7 w-7 rounded-md bg-emerald-100 p-1.5 text-brand-700">
+                      <svg viewBox="0 0 24 24" fill="none" class="h-full w-full" aria-hidden="true">
+                        <path d="M12 2L4 5.2V12.3C4 17.1 7.4 21.6 12 22.8C16.6 21.6 20 17.1 20 12.3V5.2L12 2Z" stroke="currentColor" stroke-width="1.8"/>
+                        <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </span>
+                    <div>
+                      <p class="font-bold">Preço fixo e transparente</p>
+                      <p class="text-slate-600">Saiba exatamente quanto vai pagar antes de confirmar</p>
+                    </div>
+                  </li>
+                  <li class="flex gap-3">
+                    <span class="mt-0.5 h-7 w-7 rounded-md bg-blue-100 p-1.5 text-ocean-700">
+                      <svg viewBox="0 0 24 24" fill="none" class="h-full w-full" aria-hidden="true">
+                        <path d="M12 3C8.13 3 5 6.13 5 10C5 15.25 12 21 12 21C12 21 19 15.25 19 10C19 6.13 15.87 3 12 3Z" stroke="currentColor" stroke-width="1.8"/>
+                        <circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+                      </svg>
+                    </span>
+                    <div>
+                      <p class="font-bold">Rastreamento em tempo real</p>
+                      <p class="text-slate-600">Acompanhe seu motorista a cada momento</p>
+                    </div>
+                  </li>
+                  <li class="flex gap-3">
+                    <span class="mt-0.5 h-7 w-7 rounded-md bg-orange-100 p-1.5 text-orange-600">
+                      <svg viewBox="0 0 24 24" fill="none" class="h-full w-full" aria-hidden="true">
+                        <path d="M12 21C16.97 21 21 16.97 21 12C21 7.03 16.97 3 12 3C7.03 3 3 7.03 3 12C3 16.97 7.03 21 12 21Z" stroke="currentColor" stroke-width="1.8"/>
+                        <path d="M12 8V12L15 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                      </svg>
+                    </span>
+                    <div>
+                      <p class="font-bold">Seguro incluso</p>
+                      <p class="text-slate-600">Cobertura de até R$ 5.000 em todas as viagens</p>
+                    </div>
+                  </li>
+                  <li class="flex gap-3">
+                    <span class="mt-0.5 h-7 w-7 rounded-md bg-violet-100 p-1.5 text-violet-700">
+                      <svg viewBox="0 0 24 24" fill="none" class="h-full w-full" aria-hidden="true">
+                        <path d="M5 13L9 17L19 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </span>
+                    <div>
+                      <p class="font-bold">Rápido e pontual</p>
+                      <p class="text-slate-600">Motoristas disponíveis 24/7 na sua região</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="como-funciona" class="bg-slate-100 py-16 md:py-20">
+        <div class="mx-auto max-w-6xl px-6 text-center md:px-10">
+          <h2 class="font-title text-4xl font-extrabold text-slate-900">Como funciona?</h2>
+          <p class="mt-3 text-lg text-slate-600">Em poucos cliques, seu transporte está a caminho</p>
+          <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <article class="rounded-2xl bg-white p-6 shadow-soft animate-riseIn">
+              <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-600 font-title text-lg font-bold text-white"
+                >1</span
+              >
+              <h3 class="mt-4 font-title text-lg font-bold">Informe os detalhes</h3>
+              <p class="mt-2 text-sm text-slate-600">Digite o que precisa transportar e para onde</p>
+            </article>
+            <article class="rounded-2xl bg-white p-6 shadow-soft animate-riseIn md:[animation-delay:80ms]">
+              <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-ocean-600 font-title text-lg font-bold text-white"
+                >2</span
+              >
+              <h3 class="mt-4 font-title text-lg font-bold">Veja o preço fixo</h3>
+              <p class="mt-2 text-sm text-slate-600">Preço calculado na hora, sem taxas escondidas</p>
+            </article>
+            <article class="rounded-2xl bg-white p-6 shadow-soft animate-riseIn md:[animation-delay:160ms]">
+              <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500 font-title text-lg font-bold text-white"
+                >3</span
+              >
+              <h3 class="mt-4 font-title text-lg font-bold">Conecte com motorista</h3>
+              <p class="mt-2 text-sm text-slate-600">Em segundos, encontramos o melhor motorista</p>
+            </article>
+            <article class="rounded-2xl bg-white p-6 shadow-soft animate-riseIn md:[animation-delay:240ms]">
+              <span class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-600 font-title text-lg font-bold text-white"
+                >4</span
+              >
+              <h3 class="mt-4 font-title text-lg font-bold">Acompanhe e receba</h3>
+              <p class="mt-2 text-sm text-slate-600">Rastreie em tempo real até a entrega</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="como-funciona-motorista" class="bg-[#071427] py-16 text-white md:py-20">
+        <div class="mx-auto grid max-w-6xl gap-10 px-6 md:px-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-[0.32em] text-brand-100/80">Para motoristas</p>
+            <h2 class="mt-3 font-title text-4xl font-extrabold leading-tight md:text-5xl">Ganhe mais corridas com fluxo simples e controle total</h2>
+            <p class="mt-4 max-w-2xl text-lg text-slate-300">
+              A área do motorista foi pensada para cadastro rápido, pedidos claros e ganhos fáceis de acompanhar. Sem poluição visual, com foco em operação.
+            </p>
+
+            <div class="mt-8 grid gap-4 sm:grid-cols-2">
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur">
+                <p class="text-sm font-semibold text-brand-100">Cadastre e valide</p>
+                <p class="mt-1 text-sm text-slate-300">Envie seus dados e comece a receber solicitações.</p>
+              </div>
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur">
+                <p class="text-sm font-semibold text-brand-100">Aceite no ritmo certo</p>
+                <p class="mt-1 text-sm text-slate-300">Escolha corridas próximas e acompanhe tudo pelo painel.</p>
+              </div>
+            </div>
+
+            <div class="mt-8 flex flex-wrap gap-4">
+              <button
+                id="abrir-login-motorista-cta"
+                type="button"
+                class="rounded-lg bg-brand-600 px-6 py-3 font-bold text-white transition hover:bg-brand-700"
+              >
+                Entrar como motorista
+              </button>
+              <a
+                href="pages/solicitar-transporte.html"
+                class="rounded-lg border border-white/20 bg-transparent px-6 py-3 font-semibold text-white transition hover:bg-white/10"
+              >
+                Solicitar transporte
+              </a>
+            </div>
+          </div>
+
+          <div class="rounded-[2rem] border border-white/10 bg-white/5 p-5 shadow-2xl shadow-black/20 backdrop-blur">
+            <div class="rounded-[1.6rem] bg-white p-6 text-slate-900">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-[0.24em] text-brand-700">Painel do motorista</p>
+                  <h3 class="mt-2 font-title text-2xl font-extrabold">Operação em 4 passos</h3>
+                </div>
+                <div class="rounded-full bg-brand-50 px-3 py-1 text-sm font-bold text-brand-700">24h</div>
+              </div>
+
+              <div class="mt-6 space-y-4">
+                <div class="flex gap-4 rounded-2xl bg-slate-50 p-4">
+                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-600 font-title text-lg font-bold text-white">01</div>
+                  <div>
+                    <p class="font-bold">Crie sua conta</p>
+                    <p class="text-sm text-slate-600">Preencha seus dados e registre o veículo para começar.</p>
+                  </div>
+                </div>
+                <div class="flex gap-4 rounded-2xl bg-slate-50 p-4">
+                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-ocean-600 font-title text-lg font-bold text-white">02</div>
+                  <div>
+                    <p class="font-bold">Receba pedidos</p>
+                    <p class="text-sm text-slate-600">Veja solicitações próximas com valores e detalhes.</p>
+                  </div>
+                </div>
+                <div class="flex gap-4 rounded-2xl bg-slate-50 p-4">
+                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-500 font-title text-lg font-bold text-white">03</div>
+                  <div>
+                    <p class="font-bold">Aceite e navegue</p>
+                    <p class="text-sm text-slate-600">Abra a corrida e siga para o endereço do cliente.</p>
+                  </div>
+                </div>
+                <div class="flex gap-4 rounded-2xl bg-slate-50 p-4">
+                  <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-violet-600 font-title text-lg font-bold text-white">04</div>
+                  <div>
+                    <p class="font-bold">Finalize e acompanhe ganhos</p>
+                    <p class="text-sm text-slate-600">Feche a entrega e veja seu saldo no painel.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="motoristas" class="bg-slateDeep py-12 text-slate-300">
+      <div class="mx-auto grid max-w-6xl gap-10 px-6 text-sm md:grid-cols-4 md:px-10">
+        <div>
+          <div class="inline-flex items-center gap-2">
+            <img src="assets/brand-icon.svg" alt="Leva Leve" class="h-6 w-6" />
+            <span class="font-title text-base font-bold text-white">Leva Leve</span>
+          </div>
+            <p class="mt-3 leading-relaxed text-slate-400">
+            Transporte de móveis e objetos grandes de forma simples e segura.
+          </p>
+        </div>
+        <div>
+          <h3 class="font-title text-base font-bold text-white">Empresa</h3>
+            <ul class="mt-3 space-y-2">
+            <li><a href="#" class="transition hover:text-white">Sobre nós</a></li>
+            <li><a href="#" class="transition hover:text-white">Como funciona</a></li>
+            <li><a href="#" class="transition hover:text-white">Segurança</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-title text-base font-bold text-white">Para motoristas</h3>
+          <ul class="mt-3 space-y-2">
+            <li><a href="#" class="transition hover:text-white">Cadastre-se</a></li>
+            <li><a href="#" class="transition hover:text-white">Requisitos</a></li>
+            <li><a href="#" class="transition hover:text-white">Central de ajuda</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-title text-base font-bold text-white">Contato</h3>
+          <ul class="mt-3 space-y-2 text-slate-400">
+            <li>suporte@levaleve.com.br</li>
+            <li>(11) 3000-0000</li>
+            <li>Segunda a Domingo, 24h</li>
+          </ul>
+        </div>
+      </div>
+      <p class="mx-auto mt-10 max-w-6xl border-t border-slate-700/70 px-6 pt-6 text-center text-xs text-slate-500 md:px-10">
+        © 2026 Leva Leve. Todos os direitos reservados.
+      </p>
+    </footer>
+
+    <div id="popup-login-motorista" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/45 px-4">
+      <div class="w-full max-w-5xl overflow-hidden rounded-3xl bg-white shadow-2xl">
+        <div class="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+          <div>
+            <h2 class="font-title text-3xl font-extrabold text-slate-900">Area do motorista</h2>
+            <p class="mt-1 text-sm text-slate-600">Entre com sua conta ou crie uma nova conta de motorista.</p>
+          </div>
+          <button id="fechar-login-motorista" type="button" class="rounded-full px-3 py-1 text-2xl leading-none text-slate-500 hover:bg-slate-100">×</button>
+        </div>
+
+        <div class="grid gap-0 lg:grid-cols-2">
+          <section class="border-b border-slate-200 p-6 lg:border-b-0 lg:border-r">
+            <p class="text-xs font-bold uppercase tracking-[0.24em] text-brand-700">Entrar</p>
+            <h3 class="mt-2 font-title text-2xl font-extrabold text-slate-900">Login rapido</h3>
+            <p class="mt-2 text-sm text-slate-600">Acesso com e-mail e senha para motorista ja cadastrado.</p>
+
+            <form id="motorista-login-form" class="mt-5 space-y-4">
+              <div>
+                <label class="block text-sm font-semibold text-slate-700" for="motorista-login-email">E-mail</label>
+                <input id="motorista-login-email" type="email" placeholder="motorista@levaleve.com" class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100" />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-slate-700" for="motorista-login-senha">Senha</label>
+                <input id="motorista-login-senha" type="password" placeholder="••••••••" class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100" />
+              </div>
+              <button type="submit" class="w-full rounded-xl bg-brand-600 px-4 py-3 font-bold text-white transition hover:bg-brand-700">Entrar</button>
+              <p id="motorista-login-error" class="hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"></p>
+            </form>
+
+            <div class="mt-5 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">
+              <p class="font-bold text-slate-900">Conta de teste</p>
+              <p>motorista.teste@levaleve.com</p>
+              <p>Motorista123!</p>
+            </div>
+          </section>
+
+          <section class="bg-slate-50 p-6">
+            <p class="text-xs font-bold uppercase tracking-[0.24em] text-brand-700">Criar conta</p>
+            <h3 class="mt-2 font-title text-2xl font-extrabold text-slate-900">Nova conta de motorista</h3>
+            <p class="mt-2 text-sm text-slate-600">Informe os dados do motorista e do veiculo para cadastrar.</p>
+
+            <form id="motorista-register-form" class="mt-5 grid gap-3 sm:grid-cols-2">
+              <input id="motorista-reg-nome" class="rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100 sm:col-span-2" placeholder="Nome completo" />
+              <input id="motorista-reg-email" type="email" class="rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100 sm:col-span-2" placeholder="E-mail" />
+              <input id="motorista-reg-senha" type="password" class="rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100 sm:col-span-2" placeholder="Senha" />
+              <input id="motorista-reg-telefone" class="rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100" placeholder="Telefone" />
+              <input id="motorista-reg-cpf" class="rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100" placeholder="CPF" />
+              <input id="motorista-reg-cnh" class="rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100" placeholder="CNH" />
+              <input id="motorista-reg-veiculo" class="rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100" placeholder="Veiculo" />
+              <input id="motorista-reg-placa" class="rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100" placeholder="Placa" />
+              <input id="motorista-reg-tipo" class="rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100" placeholder="Tipo de veiculo" />
+              <input id="motorista-reg-capacidade" type="number" class="rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100" placeholder="Capacidade kg" />
+              <button type="submit" class="sm:col-span-2 rounded-xl bg-slate-900 px-4 py-3 font-bold text-white transition hover:bg-slate-800">Criar conta</button>
+              <p id="motorista-register-error" class="hidden sm:col-span-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"></p>
+            </form>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div id="popup-login-cliente" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/45 px-4">
+      <div class="w-full max-w-4xl overflow-hidden rounded-3xl bg-white shadow-2xl">
+        <div class="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+          <div>
+            <h2 class="font-title text-2xl font-extrabold text-slate-900">Entrar como cliente</h2>
+            <p class="mt-1 text-sm text-slate-600">Acesse sua conta ou crie uma conta de cliente.</p>
+          </div>
+          <button id="fechar-login-cliente" type="button" class="rounded-full px-3 py-1 text-2xl leading-none text-slate-500 hover:bg-slate-100">×</button>
+        </div>
+
+        <div class="grid gap-0 lg:grid-cols-2">
+          <section class="border-b border-slate-200 p-6 lg:border-b-0 lg:border-r">
+            <p class="text-xs font-bold uppercase tracking-[0.24em] text-brand-700">Entrar</p>
+            <h3 class="mt-2 font-title text-2xl font-extrabold text-slate-900">Login rapido</h3>
+            <p class="mt-2 text-sm text-slate-600">Acesso com e-mail e senha para clientes.</p>
+
+            <form id="cliente-login-form" class="mt-5 space-y-4">
+              <div>
+                <label class="block text-sm font-semibold text-slate-700" for="cliente-login-email">E-mail</label>
+                <input id="cliente-login-email" type="email" placeholder="cliente@levaleve.com" class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100" />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-slate-700" for="cliente-login-senha">Senha</label>
+                <input id="cliente-login-senha" type="password" placeholder="••••••••" class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100" />
+              </div>
+              <button type="submit" class="w-full rounded-xl bg-brand-600 px-4 py-3 font-bold text-white transition hover:bg-brand-700">Entrar</button>
+              <p id="cliente-login-error" class="hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"></p>
+            </form>
+
+            <div class="mt-5 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">
+              <p class="font-bold text-slate-900">Conta de teste</p>
+              <p>cliente.teste@levaleve.com</p>
+              <p>Cliente123!</p>
+            </div>
+          </section>
+
+          <section class="bg-slate-50 p-6">
+            <p class="text-xs font-bold uppercase tracking-[0.24em] text-brand-700">Criar conta</p>
+            <h3 class="mt-2 font-title text-2xl font-extrabold text-slate-900">Nova conta de cliente</h3>
+            <p class="mt-2 text-sm text-slate-600">Informe seus dados para criar uma conta.</p>
+            <div class="mt-5">
+              <div class="flex items-center gap-2">
+                <button id="toggle-register-cliente" type="button" class="rounded-md border border-brand-600 bg-brand-600 px-3 py-1 text-sm font-semibold text-white">Cliente</button>
+                <button id="toggle-register-motorista" type="button" class="rounded-md border border-brand-600 bg-transparent px-3 py-1 text-sm font-semibold text-brand-700 transition hover:bg-brand-50">Motorista</button>
+              </div>
+
+              <form id="cliente-register-form" class="mt-4 grid gap-3">
+                <input id="cliente-reg-nome" class="rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100" placeholder="Nome completo" />
+                <input id="cliente-reg-email" type="email" class="rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100" placeholder="E-mail" />
+                <input id="cliente-reg-senha" type="password" class="rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100" placeholder="Senha" />
+                <input id="cliente-reg-telefone" class="rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-400 focus:ring-2 focus:ring-brand-100" placeholder="Telefone" />
+
+                <!-- driver extra fields (hidden by default) -->
+                <div id="driver-extra-fields" class="hidden grid gap-3">
+                  <input id="cliente-reg-cpf" class="rounded-xl border border-slate-300 px-4 py-3 outline-none" placeholder="CPF" />
+                  <input id="cliente-reg-cnh" class="rounded-xl border border-slate-300 px-4 py-3 outline-none" placeholder="CNH" />
+                  <input id="cliente-reg-veiculo" class="rounded-xl border border-slate-300 px-4 py-3 outline-none" placeholder="Veículo" />
+                  <input id="cliente-reg-placa" class="rounded-xl border border-slate-300 px-4 py-3 outline-none" placeholder="Placa" />
+                  <input id="cliente-reg-tipo" class="rounded-xl border border-slate-300 px-4 py-3 outline-none" placeholder="Tipo de veículo" />
+                  <input id="cliente-reg-capacidade" type="number" class="rounded-xl border border-slate-300 px-4 py-3 outline-none" placeholder="Capacidade kg" />
+                </div>
+
+                <button id="cliente-register-submit" type="submit" class="rounded-xl bg-slate-900 px-4 py-3 font-bold text-white transition hover:bg-slate-800">Criar conta</button>
+                <p id="cliente-register-error" class="hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"></p>
+              </form>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { request, setSession } from './assets/js/api.js';
+
+      const openBtn = document.getElementById('abrir-login-motorista');
+      const openDriverCta = document.getElementById('abrir-login-motorista-cta');
+      const openClienteBtn = document.getElementById('abrir-login-cliente');
+      const modal = document.getElementById('popup-login-motorista');
+      const closeBtn = document.getElementById('fechar-login-motorista');
+      const clienteModal = document.getElementById('popup-login-cliente');
+      const clienteClose = document.getElementById('fechar-login-cliente');
+      const clienteLoginForm = document.getElementById('cliente-login-form');
+      const clienteRegisterForm = document.getElementById('cliente-register-form');
+      const clienteLoginError = document.getElementById('cliente-login-error');
+      const clienteRegisterError = document.getElementById('cliente-register-error');
+      const toggleClienteBtn = document.getElementById('toggle-register-cliente');
+      const toggleMotoristaBtn = document.getElementById('toggle-register-motorista');
+      const driverExtra = document.getElementById('driver-extra-fields');
+      const motoristAreaBtn = document.getElementById('abrir-login-motorista');
+      const loginForm = document.getElementById('motorista-login-form');
+      const registerForm = document.getElementById('motorista-register-form');
+      const loginError = document.getElementById('motorista-login-error');
+      const registerError = document.getElementById('motorista-register-error');
+
+      function showError(target, message) {
+        target.textContent = message;
+        target.classList.remove('hidden');
+      }
+
+      function clearError(target) {
+        target.textContent = '';
+        target.classList.add('hidden');
+      }
+
+      function getValue(id) {
+        return document.getElementById(id).value.trim();
+      }
+
+      function openModal() {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+
+      function closeModal() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+
+      openBtn?.addEventListener('click', openModal);
+      openDriverCta?.addEventListener('click', openModal);
+      openClienteBtn?.addEventListener('click', () => {
+        clienteModal.classList.remove('hidden');
+        clienteModal.classList.add('flex');
+      });
+      closeBtn?.addEventListener('click', closeModal);
+
+      clienteClose?.addEventListener('click', () => {
+        clienteModal.classList.add('hidden');
+        clienteModal.classList.remove('flex');
+      });
+
+      modal?.addEventListener('click', (event) => {
+        if (event.target === modal) {
+          closeModal();
+        }
+      });
+
+      clienteModal?.addEventListener('click', (event) => {
+        if (event.target === clienteModal) {
+          clienteModal.classList.add('hidden');
+          clienteModal.classList.remove('flex');
+        }
+      });
+
+      // Hide motorist area button if logged user is client
+      (function adjustHeaderForUser() {
+        try {
+          const stored = localStorage.getItem('LEVA_LEVE_USER');
+          if (stored) {
+            const user = JSON.parse(stored);
+            if (user && user.role === 'client' && motoristAreaBtn) {
+              motoristAreaBtn.style.display = 'none';
+            }
+            // make Entrar button hide if already logged? keep visible for now
+          }
+        } catch (e) {
+          // ignore
+        }
+      })();
+
+      // Toggle create-account role between client and driver
+      let creatingRole = 'client';
+      function setToggleState(active) {
+        const clientActive = active === 'client';
+        const driverActive = active === 'driver';
+
+        toggleClienteBtn?.classList.toggle('bg-brand-600', clientActive);
+        toggleClienteBtn?.classList.toggle('text-white', clientActive);
+        toggleClienteBtn?.classList.toggle('border-brand-600', clientActive);
+        toggleClienteBtn?.classList.toggle('bg-transparent', !clientActive);
+        toggleClienteBtn?.classList.toggle('text-brand-700', !clientActive);
+        toggleClienteBtn?.classList.toggle('border-brand-600', !clientActive);
+
+        toggleMotoristaBtn?.classList.toggle('bg-brand-600', driverActive);
+        toggleMotoristaBtn?.classList.toggle('text-white', driverActive);
+        toggleMotoristaBtn?.classList.toggle('border-brand-600', driverActive);
+        toggleMotoristaBtn?.classList.toggle('bg-transparent', !driverActive);
+        toggleMotoristaBtn?.classList.toggle('text-brand-700', !driverActive);
+        toggleMotoristaBtn?.classList.toggle('border-brand-600', !driverActive);
+
+        toggleMotoristaBtn?.classList.toggle('hover:bg-brand-50', !driverActive);
+        toggleClienteBtn?.classList.toggle('hover:bg-brand-50', !clientActive);
+      }
+
+      setToggleState('client');
+      toggleClienteBtn?.addEventListener('click', () => {
+        creatingRole = 'client';
+        setToggleState('client');
+        driverExtra?.classList.add('hidden');
+      });
+      toggleMotoristaBtn?.addEventListener('click', () => {
+        creatingRole = 'driver';
+        setToggleState('driver');
+        driverExtra?.classList.remove('hidden');
+      });
+
+      loginForm?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        clearError(loginError);
+
+        const email = getValue('motorista-login-email');
+        const password = getValue('motorista-login-senha');
+
+        if (!email || !password) {
+          showError(loginError, 'Preencha e-mail e senha para entrar.');
+          return;
+        }
+
+        try {
+          const session = await request('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ email, password, role: 'driver' }),
+          });
+          setSession(session);
+          window.location.href = 'pages/area-motorista.html';
+        } catch (error) {
+          showError(loginError, error.message);
+        }
+      });
+
+      registerForm?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        clearError(registerError);
+
+        const fields = {
+          name: getValue('motorista-reg-nome'),
+          email: getValue('motorista-reg-email'),
+          password: getValue('motorista-reg-senha'),
+          phone: getValue('motorista-reg-telefone'),
+          cpf: getValue('motorista-reg-cpf'),
+          cnh: getValue('motorista-reg-cnh'),
+          vehicle_name: getValue('motorista-reg-veiculo'),
+          vehicle_plate: getValue('motorista-reg-placa'),
+          vehicle_type: getValue('motorista-reg-tipo'),
+          capacity_kg: Number(getValue('motorista-reg-capacidade') || 0),
+        };
+
+        const missing = [
+          !fields.name && 'nome',
+          !fields.email && 'e-mail',
+          !fields.password && 'senha',
+          !fields.phone && 'telefone',
+          !fields.cpf && 'CPF',
+          !fields.cnh && 'CNH',
+          !fields.vehicle_name && 'veículo',
+          !fields.vehicle_plate && 'placa',
+          !fields.vehicle_type && 'tipo de veículo',
+          !fields.capacity_kg && 'capacidade kg',
+        ].filter(Boolean);
+
+        if (missing.length > 0) {
+          showError(registerError, `Preencha os campos obrigatórios: ${missing.join(', ')}.`);
+          return;
+        }
+
+        try {
+          const session = await request('/auth/register/driver', {
+            method: 'POST',
+            body: JSON.stringify(fields),
+          });
+          setSession(session);
+          window.location.href = 'pages/area-motorista.html';
+        } catch (error) {
+          showError(registerError, error.message);
+        }
+      });
+
+      // Cliente handlers
+      clienteLoginForm?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        clearError(clienteLoginError);
+
+        const email = getValue('cliente-login-email');
+        const password = getValue('cliente-login-senha');
+
+        if (!email || !password) {
+          showError(clienteLoginError, 'Preencha e-mail e senha para entrar.');
+          return;
+        }
+
+        try {
+          const session = await request('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ email, password, role: 'client' }),
+          });
+          setSession(session);
+          window.location.href = 'pages/solicitar-transporte.html';
+        } catch (error) {
+          showError(clienteLoginError, error.message);
+        }
+      });
+
+      clienteRegisterForm?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        clearError(clienteRegisterError);
+
+        const base = {
+          name: getValue('cliente-reg-nome'),
+          email: getValue('cliente-reg-email'),
+          password: getValue('cliente-reg-senha'),
+          phone: getValue('cliente-reg-telefone'),
+        };
+
+        const missing = [
+          !base.name && 'nome',
+          !base.email && 'e-mail',
+          !base.password && 'senha',
+        ].filter(Boolean);
+
+        if (creatingRole === 'driver') {
+          // gather driver fields
+          const driverFields = {
+            ...base,
+            cpf: getValue('cliente-reg-cpf'),
+            cnh: getValue('cliente-reg-cnh'),
+            vehicle_name: getValue('cliente-reg-veiculo'),
+            vehicle_plate: getValue('cliente-reg-placa'),
+            vehicle_type: getValue('cliente-reg-tipo'),
+            capacity_kg: Number(getValue('cliente-reg-capacidade') || 0),
+          };
+
+          const driverMissing = [
+            !driverFields.cpf && 'CPF',
+            !driverFields.cnh && 'CNH',
+            !driverFields.vehicle_name && 'veículo',
+            !driverFields.vehicle_plate && 'placa',
+            !driverFields.vehicle_type && 'tipo de veículo',
+            !driverFields.capacity_kg && 'capacidade kg',
+          ].filter(Boolean);
+
+          if (missing.length > 0 || driverMissing.length > 0) {
+            showError(clienteRegisterError, `Preencha os campos obrigatórios: ${[...missing, ...driverMissing].join(', ')}.`);
+            return;
+          }
+
+          try {
+            const session = await request('/auth/register/driver', {
+              method: 'POST',
+              body: JSON.stringify(driverFields),
+            });
+            setSession(session);
+            // if driver logged in, redirect to motorist area
+            window.location.href = 'pages/area-motorista.html';
+          } catch (error) {
+            showError(clienteRegisterError, error.message);
+          }
+
+        } else {
+          if (missing.length > 0) {
+            showError(clienteRegisterError, `Preencha os campos obrigatórios: ${missing.join(', ')}.`);
+            return;
+          }
+
+          const payload = {
+            ...base,
+            address: {
+              street: null,
+              number: null,
+              complement: null,
+              neighborhood: null,
+              city: null,
+              state: null,
+              zip_code: null,
+              has_elevator: false,
+              floor: null,
+            },
+          };
+
+          try {
+            const session = await request('/auth/register/client', {
+              method: 'POST',
+              body: JSON.stringify(payload),
+            });
+            setSession(session);
+            window.location.href = 'pages/solicitar-transporte.html';
+          } catch (error) {
+            showError(clienteRegisterError, error.message);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
+

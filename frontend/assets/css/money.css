@@ -1,0 +1,17 @@
+/* Utility to standardize money display across the app */
+.money-display {
+  font-weight: 800;
+  font-size: 1.25rem; /* 20px default */
+  line-height: 1.1;
+}
+
+@media (min-width: 768px) {
+  .money-display {
+    font-size: 1.5rem; /* 24px on md+ */
+  }
+}
+
+.money-display.small {
+  font-weight: 700;
+  font-size: 1rem;
+}

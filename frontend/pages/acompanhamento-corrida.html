@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leva Leve | Acompanhamento da corrida</title>
+    <meta name="description" content="Acompanhe sua corrida em tempo real com mapa e status atualizado." />
+    <link rel="icon" type="image/svg+xml" href="../assets/brand-icon.svg?v=2" />
+    <link rel="shortcut icon" type="image/svg+xml" href="../assets/brand-icon.svg?v=2" />
+    <link rel="apple-touch-icon" href="../assets/brand-icon.svg?v=2" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: '#ECFDF5',
+                100: '#D1FAE5',
+                500: '#10B981',
+                600: '#059669',
+                700: '#047857',
+              },
+              skyDeep: '#072140',
+            },
+            fontFamily: {
+              title: ['Sora', 'sans-serif'],
+              body: ['DM Sans', 'sans-serif'],
+            },
+            boxShadow: {
+              card: '0 18px 40px rgba(15, 23, 42, 0.14)',
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .map-grid {
+        background-image:
+          linear-gradient(rgba(255,255,255,0.14) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.14) 1px, transparent 1px);
+        background-size: 44px 44px;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-gradient-to-br from-skyDeep via-blue-950 to-brand-700 font-body text-white antialiased">
+    <header class="w-full border-b border-white/15 bg-white/5 backdrop-blur">
+      <div class="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4 md:px-8">
+        <a href="minhas-viagens.html" class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20">
+          <span aria-hidden="true">←</span>
+          Minhas viagens
+        </a>
+        <div class="flex items-center gap-3">
+          <img src="../assets/brand-icon.svg" alt="Leva Leve" class="h-9 w-9 rounded-lg bg-white/15 p-1" />
+          <div>
+            <p class="font-title text-xl font-bold">Leva Leve</p>
+            <p class="text-xs text-blue-100">Acompanhamento da corrida</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-6 py-8 md:px-8">
+      <div id="ride-notification" class="mb-6 hidden rounded-2xl border border-emerald-300/40 bg-emerald-500/20 px-5 py-4 shadow-card backdrop-blur">
+        <p class="text-xs font-bold uppercase tracking-[0.3em] text-emerald-100">Notificação</p>
+        <p id="ride-notification-title" class="mt-1 font-title text-2xl font-extrabold text-white">Corrida aceita</p>
+        <p id="ride-notification-message" class="mt-1 text-sm text-emerald-50">Seu motorista já confirmou a viagem.</p>
+      </div>
+
+      <div class="grid gap-6 lg:grid-cols-12">
+        <section class="space-y-6 lg:col-span-8">
+          <section class="rounded-[2rem] border border-white/10 bg-white/10 p-5 shadow-card backdrop-blur md:p-6">
+            <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p class="text-xs font-bold uppercase tracking-[0.3em] text-emerald-100">Corrida em tempo real</p>
+                <h1 id="trip-title" class="mt-2 font-title text-4xl font-extrabold tracking-tight">Carregando corrida...</h1>
+                <p id="trip-subtitle" class="mt-2 text-lg text-blue-100">Aguardando confirmação do motorista.</p>
+              </div>
+              <div class="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-right">
+                <p class="text-xs text-blue-100">Status</p>
+                <p id="trip-status" class="font-title text-2xl font-extrabold">--</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/35 shadow-card">
+            <div class="map-grid relative min-h-[440px] p-5 md:p-6">
+              <div class="absolute left-6 top-6 rounded-full bg-sky-400/20 px-3 py-1 text-xs font-bold uppercase tracking-[0.28em] text-sky-100">Mapa ao vivo</div>
+              <svg viewBox="0 0 900 520" class="h-full w-full" aria-hidden="true">
+                <defs>
+                  <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#10B981" />
+                    <stop offset="100%" stop-color="#38BDF8" />
+                  </linearGradient>
+                  <filter id="glow">
+                    <feGaussianBlur stdDeviation="4" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                </defs>
+
+                <path d="M140 380C210 300 275 290 355 300C450 312 480 220 560 188C655 150 700 168 780 120" fill="none" stroke="rgba(148, 163, 184, 0.35)" stroke-width="34" stroke-linecap="round" />
+                <path d="M140 380C210 300 275 290 355 300C450 312 480 220 560 188C655 150 700 168 780 120" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="18" stroke-linecap="round" stroke-dasharray="28 18" />
+                <path id="route-line" d="M140 380C210 300 275 290 355 300C450 312 480 220 560 188C655 150 700 168 780 120" fill="none" stroke="url(#routeGradient)" stroke-width="10" stroke-linecap="round" filter="url(#glow)" />
+
+                <g transform="translate(140 380)">
+                  <circle r="22" fill="rgba(16,185,129,0.22)" />
+                  <circle r="10" fill="#10B981" />
+                </g>
+
+                <g transform="translate(780 120)">
+                  <circle r="24" fill="rgba(14,165,233,0.22)" />
+                  <circle r="11" fill="#38BDF8" />
+                </g>
+
+                <g id="driver-marker" transform="translate(140 380)">
+                  <circle r="18" fill="#ffffff" opacity="0.9" />
+                  <circle r="10" fill="#0f172a" />
+                  <path d="M-6 1L0 -8L6 1L0 9Z" fill="#10B981" />
+                </g>
+              </svg>
+
+              <div class="absolute bottom-6 left-6 right-6 grid gap-3 md:grid-cols-3">
+                <article class="rounded-2xl border border-white/10 bg-slate-950/60 p-4 backdrop-blur">
+                  <p class="text-xs uppercase tracking-[0.22em] text-blue-100">Origem</p>
+                  <p id="pickup-address" class="mt-1 font-semibold text-white">--</p>
+                  <p id="pickup-extra" class="text-sm text-slate-300">--</p>
+                </article>
+                <article class="rounded-2xl border border-white/10 bg-slate-950/60 p-4 backdrop-blur">
+                  <p class="text-xs uppercase tracking-[0.22em] text-blue-100">Motorista</p>
+                  <p id="driver-name" class="mt-1 font-semibold text-white">--</p>
+                  <p id="driver-info" class="text-sm text-slate-300">Veículo em deslocamento</p>
+                </article>
+                <article class="rounded-2xl border border-white/10 bg-slate-950/60 p-4 backdrop-blur">
+                  <p class="text-xs uppercase tracking-[0.22em] text-blue-100">Destino</p>
+                  <p id="dropoff-address" class="mt-1 font-semibold text-white">--</p>
+                  <p id="dropoff-extra" class="text-sm text-slate-300">--</p>
+                </article>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <aside class="space-y-6 lg:col-span-4">
+          <section class="rounded-[2rem] border border-white/10 bg-white text-slate-900 shadow-card">
+            <div class="border-b border-slate-200 px-5 py-5">
+              <p class="text-xs font-bold uppercase tracking-[0.28em] text-brand-700">Resumo da corrida</p>
+              <h2 class="mt-1 font-title text-2xl font-extrabold" id="trip-summary-title">--</h2>
+            </div>
+            <div class="space-y-4 px-5 py-5">
+              <div>
+                <div class="flex items-center justify-between text-sm text-slate-500">
+                  <span>Progresso</span>
+                  <span id="progress-label">--%</span>
+                </div>
+                <div class="mt-2 h-3 overflow-hidden rounded-full bg-slate-100">
+                  <div id="progress-bar" class="h-full w-0 rounded-full bg-gradient-to-r from-brand-500 to-sky-500 transition-[width] duration-500"></div>
+                </div>
+              </div>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <div class="rounded-2xl bg-slate-50 p-4">
+                  <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Tempo estimado</p>
+                  <p id="eta-minutes" class="mt-1 font-title text-3xl font-extrabold text-slate-900">--</p>
+                </div>
+                <div class="rounded-2xl bg-slate-50 p-4">
+                  <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Distância</p>
+                  <p id="distance-km" class="mt-1 font-title text-3xl font-extrabold text-slate-900">--</p>
+                </div>
+              </div>
+              <div class="rounded-2xl bg-brand-50 p-4 text-brand-700">
+                <p class="text-xs font-bold uppercase tracking-[0.2em]">Pagamento confirmado</p>
+                <p id="price-value" class="mt-1 font-title text-3xl font-extrabold">R$ --</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="rounded-[2rem] border border-white/10 bg-white/10 p-5 text-white shadow-card backdrop-blur">
+            <h3 class="font-title text-2xl font-extrabold">Atualização ao vivo</h3>
+            <p class="mt-2 text-sm text-blue-100">A página consulta o status da corrida e atualiza o mapa automaticamente enquanto a viagem avança.</p>
+            <div class="mt-4 grid gap-3 sm:grid-cols-2">
+              <div class="rounded-2xl bg-white/10 p-4">
+                <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Cliente</p>
+                <p id="client-name" class="mt-1 font-semibold">--</p>
+              </div>
+              <div class="rounded-2xl bg-white/10 p-4">
+                <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Status</p>
+                <p id="status-copy" class="mt-1 font-semibold">--</p>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <script type="module">
+      import { request } from '../assets/js/api.js';
+
+      const params = new URLSearchParams(window.location.search);
+      const requestId = params.get('request');
+      const rideNotification = document.getElementById('ride-notification');
+      const rideNotificationTitle = document.getElementById('ride-notification-title');
+      const rideNotificationMessage = document.getElementById('ride-notification-message');
+      const driverMarker = document.getElementById('driver-marker');
+      const routePath = document.getElementById('route-line');
+
+      const pathLength = routePath.getTotalLength();
+      let activeTrip = null;
+      let progress = 0.12;
+      let animationFrameId = null;
+      let lastNotificationId = sessionStorage.getItem('LEVA_LEVE_LAST_NOTIFICATION_ID') || '';
+
+      function statusLabel(status) {
+        const map = {
+          available: 'Aguardando motorista',
+          accepted: 'Motorista aceitou',
+          completed: 'Corrida concluída',
+          canceled: 'Corrida cancelada',
+        };
+        return map[status] || 'Atualizando';
+      }
+
+      function splitAddress(address) {
+        const parts = String(address || '').split(' - ');
+        return {
+          primary: parts[0] || '--',
+          extra: parts.slice(1).join(' - ') || '--',
+        };
+      }
+
+      function showNotification(notification) {
+        if (!notification) {
+          return;
+        }
+
+        if (notification.id && notification.id === lastNotificationId) {
+          return;
+        }
+
+        if (notification.id) {
+          lastNotificationId = notification.id;
+          sessionStorage.setItem('LEVA_LEVE_LAST_NOTIFICATION_ID', notification.id);
+        }
+
+        rideNotificationTitle.textContent = notification.title || 'Corrida aceita';
+        rideNotificationMessage.textContent = notification.message || 'Seu motorista confirmou a viagem.';
+        rideNotification.classList.remove('hidden');
+      }
+
+      function setMapPosition(value) {
+        const point = routePath.getPointAtLength(pathLength * value);
+        driverMarker.setAttribute('transform', `translate(${point.x} ${point.y})`);
+      }
+
+      function animateMap() {
+        if (!activeTrip || activeTrip.status !== 'accepted') {
+          setMapPosition(0.12);
+          return;
+        }
+
+        progress += 0.0008;
+        if (progress > 0.94) {
+          progress = 0.94;
+        }
+        setMapPosition(progress);
+        animationFrameId = requestAnimationFrame(animateMap);
+      }
+
+      async function loadTrip() {
+        if (!requestId) {
+          document.getElementById('trip-title').textContent = 'Solicitação não encontrada';
+          document.getElementById('trip-subtitle').textContent = 'Volte para suas viagens e abra uma corrida válida.';
+          return;
+        }
+
+        try {
+          const trip = await request(`/client/requests/${requestId}`);
+          activeTrip = trip;
+
+          const pickup = splitAddress(trip.pickup_address);
+          const dropoff = splitAddress(trip.dropoff_address);
+
+          document.getElementById('trip-title').textContent = trip.title || 'Sua corrida';
+          document.getElementById('trip-subtitle').textContent = trip.status === 'accepted'
+            ? `Motorista ${trip.accepted_driver_name || 'confirmado'} a caminho.`
+            : 'Aguardando confirmação do motorista.';
+          document.getElementById('trip-status').textContent = statusLabel(trip.status);
+          document.getElementById('trip-summary-title').textContent = trip.title || 'Corrida em andamento';
+          document.getElementById('pickup-address').textContent = pickup.primary;
+          document.getElementById('pickup-extra').textContent = pickup.extra;
+          document.getElementById('dropoff-address').textContent = dropoff.primary;
+          document.getElementById('dropoff-extra').textContent = dropoff.extra;
+          document.getElementById('driver-name').textContent = trip.accepted_driver_name || 'Motorista designado';
+          document.getElementById('client-name').textContent = trip.client_name || 'Cliente';
+          document.getElementById('status-copy').textContent = statusLabel(trip.status);
+          document.getElementById('eta-minutes').textContent = `${trip.eta_minutes} min`;
+          document.getElementById('distance-km').textContent = `${Number(trip.distance_km).toFixed(1)} km`;
+          document.getElementById('price-value').textContent = `R$ ${Number(trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+          const shownProgress = trip.status === 'accepted' ? Math.max(progress, 0.24) : 0.12;
+          progress = shownProgress;
+          document.getElementById('progress-label').textContent = `${Math.round(shownProgress * 100)}%`;
+          document.getElementById('progress-bar').style.width = `${Math.round(shownProgress * 100)}%`;
+          setMapPosition(shownProgress);
+
+          if (trip.status === 'accepted') {
+            if (animationFrameId) {
+              cancelAnimationFrame(animationFrameId);
+            }
+            animateMap();
+          }
+
+          const storedNotification = sessionStorage.getItem('LEVA_LEVE_LAST_NOTIFICATION');
+          if (storedNotification) {
+            try {
+              showNotification(JSON.parse(storedNotification));
+              sessionStorage.removeItem('LEVA_LEVE_LAST_NOTIFICATION');
+            } catch {
+              sessionStorage.removeItem('LEVA_LEVE_LAST_NOTIFICATION');
+            }
+          }
+        } catch (error) {
+          document.getElementById('trip-title').textContent = 'Falha ao carregar a corrida';
+          document.getElementById('trip-subtitle').textContent = error.message || 'Nao foi possivel buscar os dados da corrida.';
+        }
+      }
+
+      async function refreshTrip() {
+        if (!requestId) {
+          return;
+        }
+
+        try {
+          const trip = await request(`/client/requests/${requestId}`);
+          activeTrip = trip;
+          document.getElementById('status-copy').textContent = statusLabel(trip.status);
+          document.getElementById('trip-status').textContent = statusLabel(trip.status);
+          if (trip.status === 'accepted') {
+            document.getElementById('trip-subtitle').textContent = `Motorista ${trip.accepted_driver_name || 'confirmado'} a caminho.`;
+            if (trip.accepted_driver_name) {
+              document.getElementById('driver-name').textContent = trip.accepted_driver_name;
+            }
+            document.getElementById('progress-bar').style.width = `${Math.round(progress * 100)}%`;
+            document.getElementById('progress-label').textContent = `${Math.round(progress * 100)}%`;
+            if (!animationFrameId) {
+              animateMap();
+            }
+          }
+        } catch (error) {
+          console.warn(error.message);
+        }
+      }
+
+      loadTrip();
+      setInterval(refreshTrip, 5000);
+    </script>
+  </body>
+</html>

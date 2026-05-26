@@ -15,6 +15,7 @@
       rel="stylesheet"
     />
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../assets/css/money.css">
     <script>
       tailwind.config = {
         theme: {
@@ -51,7 +52,7 @@
 
         <div class="rounded-xl bg-white/15 px-4 py-2 backdrop-blur">
           <p class="text-xs text-blue-100">Ganho desta viagem</p>
-          <p class="font-title text-4xl font-extrabold">R$ 89,90</p>
+          <p id="trip-earnings" class="font-title text-2xl font-extrabold money-display">R$ --</p>
         </div>
       </div>
     </header>
@@ -63,11 +64,11 @@
             <div class="flex items-end justify-between">
               <div>
                 <p class="text-sm text-blue-100">Indo para retirada</p>
-                <p class="font-title text-5xl font-extrabold">1.2 km</p>
+                <p id="distance-remaining" class="font-title text-5xl font-extrabold">-- km</p>
               </div>
               <div class="text-right">
                 <p class="text-sm text-blue-100">Tempo estimado</p>
-                <p class="font-title text-5xl font-extrabold">5 min</p>
+                <p id="eta-remaining" class="font-title text-5xl font-extrabold">-- min</p>
               </div>
             </div>
             <div class="mt-3 h-2 rounded-full bg-blue-400/70">
@@ -96,10 +97,10 @@
                   <span class="h-3 w-3 rounded-full bg-brand-600"></span>
                   <p class="font-bold">Ponto de coleta</p>
                 </div>
-                <p class="mt-3 font-semibold">Rua das Flores, 123</p>
-                <p class="text-sm text-slate-600">Vila Mariana, Sao Paulo - SP</p>
-                <p class="mt-2 text-xs text-slate-500">Complemento: Apto 42, 3o andar</p>
-                <p class="mt-2 text-xs font-semibold text-brand-700">✓ Elevador disponivel</p>
+                <p id="pickup-address" class="mt-3 font-semibold">--</p>
+                <p id="pickup-city" class="text-sm text-slate-600">--</p>
+                <p id="pickup-extra" class="mt-2 text-xs text-slate-500">--</p>
+                <p id="pickup-elevator" class="mt-2 text-xs font-semibold text-brand-700">--</p>
               </article>
 
               <article class="rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -107,10 +108,10 @@
                   <span class="h-3 w-3 rounded-full bg-red-500"></span>
                   <p class="font-bold">Ponto de entrega</p>
                 </div>
-                <p class="mt-3 font-semibold">Av. Paulista, 1500</p>
-                <p class="text-sm text-slate-600">Bela Vista, Sao Paulo - SP</p>
-                <p class="mt-2 text-xs text-slate-500">Complemento: 15o andar</p>
-                <p class="mt-2 text-xs font-semibold text-brand-700">📍 8.5 km da origem</p>
+                <p id="dropoff-address" class="mt-3 font-semibold">--</p>
+                <p id="dropoff-city" class="text-sm text-slate-600">--</p>
+                <p id="dropoff-extra" class="mt-2 text-xs text-slate-500">--</p>
+                <p id="dropoff-distance" class="mt-2 text-xs font-semibold text-brand-700">📍 -- km da origem</p>
               </article>
             </div>
           </section>
@@ -127,7 +128,7 @@
                 </svg>
               </span>
               <div>
-                <p class="font-title text-2xl font-extrabold">Joao M.</p>
+                <p id="client-name" class="font-title text-2xl font-extrabold">Cliente</p>
                 <p class="text-sm text-slate-500">Cliente</p>
               </div>
             </div>
@@ -140,10 +141,10 @@
           <section class="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-blue-800 shadow-card">
             <h3 class="font-title text-2xl font-extrabold">Itens para transportar</h3>
             <ul class="mt-2 space-y-1 text-sm">
-              <li>• Sofa de 3 lugares</li>
-              <li>• Dimensoes: 100x80x90 cm</li>
-              <li>• Peso: 50-100kg</li>
-              <li class="font-semibold">👥 Ajudante solicitado</li>
+              <li id="item-title">• Item informado</li>
+              <li id="item-size">• Dimensoes: --</li>
+              <li id="item-weight">• Peso: --</li>
+              <li id="item-helper" class="font-semibold">👥 --</li>
             </ul>
           </section>
 
@@ -159,10 +160,10 @@
           <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-card">
             <h3 class="font-title text-2xl font-extrabold">Informacoes da viagem</h3>
             <ul class="mt-3 space-y-2 text-sm">
-              <li class="flex justify-between"><span>Distancia total</span><span class="font-semibold">8.5 km</span></li>
-              <li class="flex justify-between"><span>Tempo estimado</span><span class="font-semibold">35-45 min</span></li>
-              <li class="flex justify-between"><span>Com ajudante</span><span class="font-semibold">Sim</span></li>
-              <li class="flex justify-between"><span>Ganho</span><span class="font-semibold text-brand-700">R$ 89,90</span></li>
+              <li class="flex justify-between"><span>Distancia total</span><span id="info-distance" class="font-semibold">-- km</span></li>
+              <li class="flex justify-between"><span>Tempo estimado</span><span id="info-eta" class="font-semibold">-- min</span></li>
+              <li class="flex justify-between"><span>Com ajudante</span><span id="info-helper" class="font-semibold">--</span></li>
+              <li class="flex justify-between"><span>Ganho</span><span id="info-price" class="font-semibold text-brand-700 text-lg money-display small">R$ --</span></li>
             </ul>
           </section>
 
@@ -172,6 +173,121 @@
     </main>
 
     <script>
+      const params = new URLSearchParams(window.location.search);
+      const requestId = params.get('request');
+      const fallbackTripData = {
+        price: Number(params.get('price') || '0'),
+        distance_km: Number(params.get('distance_km') || '0'),
+        eta_minutes: Number(params.get('eta_minutes') || '0'),
+        helper_required: params.get('helper_required') === 'true',
+        pickup_address: params.get('pickup_street') || '--',
+        client_name: params.get('client_name') || 'Cliente',
+        client_since: params.get('client_since') || '--',
+        dropoff_address: params.get('dropoff_address') || '--',
+        item_title: params.get('item_title') || 'Item informado',
+      };
+
+      function applyTripData(data) {
+        const price = Number(data.price || 0);
+        const distanceKm = Number(data.distance_km || 0);
+        const etaMinutes = Number(data.eta_minutes || 0);
+        const helperRequired = data.helper_required === true;
+        const pickupParts = String(data.pickup_address || '').split(' - ');
+        const dropoffParts = String(data.dropoff_address || '').split(' - ');
+
+        document.getElementById('trip-earnings').textContent = `R$ ${price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        document.getElementById('distance-remaining').textContent = `${distanceKm.toFixed(1)} km`;
+        document.getElementById('eta-remaining').textContent = `${etaMinutes} min`;
+        document.getElementById('pickup-address').textContent = pickupParts[0] || data.pickup_address || '--';
+        document.getElementById('pickup-city').textContent = pickupParts.slice(1).join(' - ') || data.client_name || '--';
+        document.getElementById('pickup-extra').textContent = data.client_since || '--';
+        document.getElementById('pickup-elevator').textContent = helperRequired ? '✓ Elevador disponivel' : '✓ Endereco carregado';
+        document.getElementById('dropoff-address').textContent = dropoffParts[0] || data.dropoff_address || '--';
+        document.getElementById('dropoff-city').textContent = dropoffParts.slice(1).join(' - ') || data.category || 'Destino informado';
+        document.getElementById('dropoff-extra').textContent = data.item_description || '--';
+        document.getElementById('dropoff-distance').textContent = `📍 ${distanceKm.toFixed(1)} km da origem`;
+        document.getElementById('client-name').textContent = data.client_name || 'Cliente';
+        document.getElementById('item-title').textContent = `• ${data.title || 'Item informado'}`;
+        document.getElementById('item-helper').textContent = helperRequired ? '👥 Ajudante solicitado' : '👥 Sem ajudante';
+        document.getElementById('info-distance').textContent = `${distanceKm.toFixed(1)} km`;
+        document.getElementById('info-eta').textContent = `${etaMinutes} min`;
+        document.getElementById('info-helper').textContent = helperRequired ? 'Sim' : 'Nao';
+        document.getElementById('info-price').textContent = `R$ ${price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      }
+
+      async function loadTrip() {
+        if (!requestId) {
+          applyTripData({
+            price: fallbackTripData.price,
+            distance_km: fallbackTripData.distance_km,
+            eta_minutes: fallbackTripData.eta_minutes,
+            helper_required: fallbackTripData.helper_required,
+            pickup_address: fallbackTripData.pickup_address,
+            client_name: fallbackTripData.client_name,
+            client_since: fallbackTripData.client_since,
+            dropoff_address: fallbackTripData.dropoff_address,
+            category: 'Destino informado',
+            item_description: fallbackTripData.item_title,
+            title: fallbackTripData.item_title,
+          });
+          return;
+        }
+
+        const token = localStorage.getItem('LEVA_LEVE_TOKEN') || '';
+        const storedUser = (() => {
+          try {
+            return JSON.parse(localStorage.getItem('LEVA_LEVE_USER') || 'null');
+          } catch {
+            return null;
+          }
+        })();
+        if (!token || storedUser?.role !== 'driver') {
+          applyTripData({
+            price: fallbackTripData.price,
+            distance_km: fallbackTripData.distance_km,
+            eta_minutes: fallbackTripData.eta_minutes,
+            helper_required: fallbackTripData.helper_required,
+            pickup_address: fallbackTripData.pickup_address,
+            client_name: fallbackTripData.client_name,
+            client_since: fallbackTripData.client_since,
+            dropoff_address: fallbackTripData.dropoff_address,
+            category: 'Destino informado',
+            item_description: fallbackTripData.item_title,
+            title: fallbackTripData.item_title,
+          });
+          return;
+        }
+
+        try {
+          const response = await fetch(`http://localhost:8000/driver/requests/${requestId}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+          if (!response.ok) {
+            throw new Error('Nao foi possivel carregar os dados da corrida.');
+          }
+          const data = await response.json();
+          applyTripData(data);
+        } catch (error) {
+          applyTripData({
+            price: fallbackTripData.price,
+            distance_km: fallbackTripData.distance_km,
+            eta_minutes: fallbackTripData.eta_minutes,
+            helper_required: fallbackTripData.helper_required,
+            pickup_address: fallbackTripData.pickup_street,
+            client_name: fallbackTripData.client_name,
+            client_since: fallbackTripData.client_since,
+            dropoff_address: fallbackTripData.dropoff_address,
+            category: 'Destino informado',
+            item_description: fallbackTripData.item_title,
+            title: fallbackTripData.item_title,
+          });
+        }
+      }
+
+      loadTrip();
+
       (function () {
         const finishButton = document.getElementById("finalizar-entrega");
         finishButton.addEventListener("click", function () {
