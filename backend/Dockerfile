@@ -17,8 +17,8 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # Copy application code
 COPY backend /app
 
-# Expose port
+# Expose the default port used locally; Render will still inject PORT at runtime.
 EXPOSE 8000
 
-# Default command uses gunicorn with uvicorn workers (Render will set $PORT)
-CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "-w", "4", "-b", "0.0.0.0:8000", "app.main:app"]
+# Render injects PORT dynamically, so use a shell form command to expand it.
+CMD ["sh", "-c", "gunicorn -k uvicorn.workers.UvicornWorker -w 4 -b 0.0.0.0:${PORT:-8000} app.main:app"]
