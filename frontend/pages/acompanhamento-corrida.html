@@ -240,8 +240,6 @@
                   const notificationMessage = document.getElementById('ride-notification-message');
                   const clientCallLink = document.getElementById('client-call-link');
                   const openNavigation = document.getElementById('open-navigation');
-                  const routeMapFrame = document.getElementById('route-map-frame');
-                  const mapPlaceholder = document.getElementById('map-placeholder');
                   const completeTripButton = document.getElementById('complete-trip');
 
                   let lastNotificationId = sessionStorage.getItem('LEVA_LEVE_LAST_NOTIFICATION_ID') || '';
@@ -343,15 +341,6 @@
                     document.getElementById('price-value-top').textContent = `R$ ${Number(trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                     document.getElementById('trip-total-card').classList.remove('hidden');
 
-                    if (trip.maps_embed_url) {
-                      routeMapFrame.src = trip.maps_embed_url;
-                      routeMapFrame.classList.remove('hidden');
-                      mapPlaceholder.classList.add('hidden');
-                    } else {
-                      routeMapFrame.classList.add('hidden');
-                      mapPlaceholder.classList.remove('hidden');
-                    }
-
                     const contactPhone = trip.client_phone || '';
                     if (contactPhone) {
                       clientCallLink.href = `tel:${phoneDigits(contactPhone)}`;
@@ -366,15 +355,16 @@
                     document.getElementById('progress-distance').textContent = `${Number(trip.distance_km).toFixed(1)} km`;
 
                     if (trip.status === 'accepted') {
-                      openNavigation.onclick = () => {
-                        const url = trip.maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(trip.dropoff_address || '')}`;
-                        window.open(url, '_blank', 'noopener,noreferrer');
-                      };
                       if (animationFrameId) {
                         cancelAnimationFrame(animationFrameId);
                       }
                       continueAnimation();
                     }
+
+                    document.getElementById('open-navigation').addEventListener('click', () => {
+                      const destination = encodeURIComponent(trip.dropoff_address || '');
+                      window.open(`https://www.google.com/maps/search/?api=1&query=${destination}`, '_blank', 'noopener,noreferrer');
+                    }, { once: true });
                   }
 
                   async function loadTrip() {

@@ -1,13 +1,9 @@
 from __future__ import annotations
 
-import json
 import logging
 import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from urllib.error import HTTPError, URLError
-from urllib.parse import quote_plus
-from urllib.request import urlopen
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Response, status
 from fastapi import Request
@@ -37,8 +33,6 @@ from app.schemas import (
     DriverRequestOut,
     LoginRequest,
     NotificationOut,
-    RouteEstimateIn,
-    RouteEstimateOut,
     SimpleMessage,
     TokenResponse,
     UserUpdateIn,
@@ -131,71 +125,11 @@ def driver_profile_payload(user: User, profile: DriverProfile) -> dict:
     }
 
 
-def calculate_price(distance_km: float, helper_required: bool) -> float:
-    base_price = 12.0 + (distance_km * 5.5)
-    helper_fee = 30.0 if helper_required else 0.0
-    return round(base_price + helper_fee, 2)
-
-
-def build_google_maps_urls(origin: str, destination: str) -> dict[str, str | None]:
-    maps_url = (
-        "https://www.google.com/maps/dir/?api=1"
-        f"&origin={quote_plus(origin)}"
-        f"&destination={quote_plus(destination)}"
-        "&travelmode=driving"
-    )
-    if not settings.google_maps_api_key:
-        return {"maps_url": maps_url, "embed_url": None}
-
-    embed_url = (
-        "https://www.google.com/maps/embed/v1/directions"
-        f"?key={settings.google_maps_api_key}"
-        f"&origin={quote_plus(origin)}"
-        f"&destination={quote_plus(destination)}"
-        "&mode=driving"
-        "&language=pt-BR"
-    )
-    return {"maps_url": maps_url, "embed_url": embed_url}
-
-
-def estimate_route(origin: str, destination: str) -> tuple[float, int, str]:
-    if not settings.google_maps_api_key:
-        heuristic_distance = round(max(2.5, min(28.0, (len(origin) + len(destination)) / 14.0)), 1)
-        heuristic_eta = max(8, round(heuristic_distance * 4.5))
-        return heuristic_distance, heuristic_eta, ""
-
-    url = (
-        "https://maps.googleapis.com/maps/api/directions/json"
-        f"?origin={quote_plus(origin)}"
-        f"&destination={quote_plus(destination)}"
-        "&mode=driving"
-        "&language=pt-BR"
-        f"&key={settings.google_maps_api_key}"
-    )
-
-    try:
-        with urlopen(url, timeout=15) as response:
-            payload = json.loads(response.read().decode("utf-8"))
-    except HTTPError as error:
-        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=f"Google Maps retornou erro HTTP {error.code}") from error
-    except URLError as error:
-        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail="Nao foi possivel consultar o Google Maps") from error
-
-    if payload.get("status") != "OK" or not payload.get("routes"):
-        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=payload.get("error_message") or "Nao foi possivel calcular a rota")
-
-    leg = payload["routes"][0]["legs"][0]
-    distance_km = round(float(leg["distance"]["value"]) / 1000.0, 1)
-    eta_minutes = max(1, round(float(leg["duration"]["value"]) / 60.0))
-    return distance_km, eta_minutes, payload["routes"][0].get("overview_polyline", {}).get("points", "")
-
-
 def request_payload(
     request: TransportRequest,
     accepted_driver_name: str | None = None,
     accepted_driver_phone: str | None = None,
 ) -> dict:
-    maps_urls = build_google_maps_urls(request.pickup_address, request.dropoff_address)
     payload = {
         "id": request.id,
         "title": request.title,
@@ -210,8 +144,6 @@ def request_payload(
         "helper_required": request.helper_required,
         "item_description": request.item_description,
         "status": request.status.value,
-        "maps_url": maps_urls["maps_url"],
-        "maps_embed_url": maps_urls["embed_url"],
     }
     if accepted_driver_name is not None:
         payload["accepted_driver_name"] = accepted_driver_name
@@ -475,32 +407,6 @@ def get_client_address(authorization: str | None = Header(default=None), db: Ses
     return client_profile_payload(user.client_profile)
 
 
-@app.post("/client/route-estimate", response_model=RouteEstimateOut)
-def estimate_client_route(payload: RouteEstimateIn, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
-    user = get_current_user(authorization, db)
-    if user.role != UserRole.client or not user.client_profile:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Acesso permitido apenas para cliente")
-
-    origin = f"{user.client_profile.street}, {user.client_profile.number} - {user.client_profile.neighborhood}, {user.client_profile.city} - {user.client_profile.state}"
-    destination = payload.dropoff_address
-    distance_km, eta_minutes, _ = estimate_route(origin, destination)
-    price = calculate_price(distance_km, payload.helper_required)
-    maps_urls = build_google_maps_urls(origin, destination)
-    helper_fee = 30.0 if payload.helper_required else 0.0
-    return {
-        "origin": origin,
-        "destination": destination,
-        "distance_km": distance_km,
-        "eta_minutes": eta_minutes,
-        "base_price": round(price - helper_fee, 2),
-        "helper_fee": helper_fee,
-        "price": price,
-        "maps_url": maps_urls["maps_url"],
-        "embed_url": maps_urls["embed_url"],
-        "source": "google_maps",
-    }
-
-
 @app.put("/client/address/me", response_model=ClientAddressOut)
 def update_client_address(payload: ClientAddressIn, authorization: str | None = Header(default=None), db: Session = Depends(get_db)):
     user = get_current_user(authorization, db)
@@ -551,7 +457,7 @@ def create_client_request(payload: ClientTransportRequestIn, authorization: str 
         dropoff_address=f"{dropoff_parts[0]} - {', '.join(dropoff_extra_parts)}" if dropoff_extra_parts else dropoff_parts[0],
         distance_km=payload.distance_km,
         eta_minutes=payload.eta_minutes,
-        price=calculate_price(payload.distance_km, payload.helper_required),
+        price=payload.price,
         helper_required=payload.helper_required,
         item_description=payload.item_description,
     )

@@ -77,7 +77,7 @@
       <div class="grid gap-6 lg:grid-cols-12">
         <section class="lg:col-span-6">
           <div class="relative min-h-[420px] overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-emerald-100 via-blue-100 to-violet-100 p-5 shadow-card">
-            <button id="use-location-btn" class="absolute right-5 top-5 inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white/90 px-3 py-2 text-sm font-medium text-brand-700 shadow-sm hover:bg-white">
+            <button class="absolute right-5 top-5 inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white/90 px-3 py-2 text-sm font-medium text-brand-700 shadow-sm hover:bg-white">
               <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
                 <path d="M12 21C16 17 19 13.4 19 10A7 7 0 1 0 5 10C5 13.4 8 17 12 21Z" stroke="currentColor" stroke-width="2"/>
                 <circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="2"/>
@@ -85,7 +85,7 @@
               Usar minha localizacao
             </button>
 
-            <div id="map-placeholder" class="flex h-full flex-col items-center justify-center text-center text-slate-500">
+            <div class="flex h-full flex-col items-center justify-center text-center text-slate-500">
               <svg viewBox="0 0 24 24" fill="none" class="h-14 w-14 text-slate-400" aria-hidden="true">
                 <path d="M12 21C16 17 19 13.4 19 10A7 7 0 1 0 5 10C5 13.4 8 17 12 21Z" stroke="currentColor" stroke-width="1.8"/>
                 <circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8"/>
@@ -103,9 +103,6 @@
                 <span class="text-sm">Ponto de entrega</span>
               </div>
             </div>
-
-            <iframe id="route-map-frame" class="hidden h-full w-full rounded-2xl border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa da rota"></iframe>
-            <a id="open-maps-link" href="#" target="_blank" rel="noreferrer" class="absolute bottom-5 right-5 hidden rounded-lg bg-brand-600 px-4 py-3 text-sm font-bold text-white shadow-lg transition hover:bg-brand-700">Abrir no Google Maps</a>
           </div>
         </section>
 
@@ -194,14 +191,6 @@
       import { request } from '../assets/js/api.js';
 
       let clientAddress = null;
-      let latestEstimate = null;
-
-      const dropoffAddressInput = document.getElementById('dropoff-address');
-      const estimatedDistanceEl = document.getElementById('estimated-distance');
-      const routeMapFrame = document.getElementById('route-map-frame');
-      const mapPlaceholder = document.getElementById('map-placeholder');
-      const openMapsLink = document.getElementById('open-maps-link');
-      const calculateBtn = document.getElementById('calcular-preco');
 
       async function loadAddress() {
         try {
@@ -216,78 +205,25 @@
         }
       }
 
-      function renderMapPreview(estimate) {
-        if (estimate?.maps_url) {
-          openMapsLink.href = estimate.maps_url;
-          openMapsLink.classList.remove('hidden');
-        }
+      document.getElementById('calcular-preco').addEventListener('click', function () {
+        const params = new URLSearchParams({
+          pickup_street: clientAddress ? `${clientAddress.street}, ${clientAddress.number}` : 'Endereco do cliente',
+          pickup_city: clientAddress ? `${clientAddress.neighborhood}, ${clientAddress.city} - ${clientAddress.state}` : '--',
+          pickup_complement: document.getElementById('pickup-complement').value.trim(),
+          pickup_floor: document.getElementById('pickup-floor').value.trim(),
+          dropoff_address: document.getElementById('dropoff-address').value.trim(),
+          dropoff_complement: document.getElementById('dropoff-complement').value.trim(),
+          dropoff_floor: document.getElementById('dropoff-floor').value.trim(),
+          distance_km: '8.5',
+          eta_minutes: '40',
+          price: '89.90',
+          helper_required: 'true',
+          item_title: new URLSearchParams(window.location.search).get('item_title') || 'Item informado',
+          client_name: new URLSearchParams(window.location.search).get('client_name') || 'Cliente',
+        });
 
-        if (estimate?.embed_url) {
-          routeMapFrame.src = estimate.embed_url;
-          routeMapFrame.classList.remove('hidden');
-          mapPlaceholder.classList.add('hidden');
-          return;
-        }
-
-        routeMapFrame.classList.add('hidden');
-        mapPlaceholder.classList.remove('hidden');
-        openMapsLink.classList.add('hidden');
-      }
-
-      async function calculateRoute() {
-        if (!clientAddress) {
-          return;
-        }
-
-        const dropoffAddress = dropoffAddressInput.value.trim();
-        if (!dropoffAddress) {
-          alert('Informe o endereco de entrega.');
-          return;
-        }
-
-        try {
-          calculateBtn.disabled = true;
-          calculateBtn.textContent = 'Calculando...';
-          const estimate = await request('/client/route-estimate', {
-            method: 'POST',
-            body: JSON.stringify({
-              pickup_address: clientAddress ? `${clientAddress.street}, ${clientAddress.number} - ${clientAddress.neighborhood}, ${clientAddress.city} - ${clientAddress.state}` : '',
-              dropoff_address: dropoffAddress,
-              helper_required: document.getElementById('helper-required')?.checked || false,
-            }),
-          });
-
-          latestEstimate = estimate;
-          estimatedDistanceEl.textContent = `${Number(estimate.distance_km).toFixed(1)} km`;
-          renderMapPreview(estimate);
-          sessionStorage.setItem('LEVA_LEVE_LAST_ROUTE_ESTIMATE', JSON.stringify(estimate));
-
-          const params = new URLSearchParams({
-            pickup_street: clientAddress ? `${clientAddress.street}, ${clientAddress.number}` : 'Endereco do cliente',
-            pickup_city: clientAddress ? `${clientAddress.neighborhood}, ${clientAddress.city} - ${clientAddress.state}` : '--',
-            pickup_complement: document.getElementById('pickup-complement').value.trim(),
-            pickup_floor: document.getElementById('pickup-floor').value.trim(),
-            dropoff_address: dropoffAddress,
-            dropoff_complement: document.getElementById('dropoff-complement').value.trim(),
-            dropoff_floor: document.getElementById('dropoff-floor').value.trim(),
-            distance_km: String(estimate.distance_km),
-            eta_minutes: String(estimate.eta_minutes),
-            price: String(estimate.price),
-            helper_required: String(false),
-            item_title: new URLSearchParams(window.location.search).get('item_title') || 'Item informado',
-            client_name: new URLSearchParams(window.location.search).get('client_name') || 'Cliente',
-          });
-
-          window.location.href = `confirmar-pagamento.html?${params.toString()}`;
-        } catch (error) {
-          alert(error.message || 'Nao foi possivel calcular a rota.');
-        } finally {
-          calculateBtn.disabled = false;
-          calculateBtn.textContent = 'Calcular Preco';
-        }
-      }
-
-      document.getElementById('calcular-preco').addEventListener('click', calculateRoute);
+        window.location.href = `confirmar-pagamento.html?${params.toString()}`;
+      });
 
       loadAddress();
     </script>
