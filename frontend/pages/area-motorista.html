@@ -163,6 +163,7 @@
       const goalEarningsEl = document.getElementById('goal-earnings');
       const goalTripsBarEl = document.getElementById('goal-trips-bar');
       const goalEarningsBarEl = document.getElementById('goal-earnings-bar');
+      let dashboardPollId = null;
 
       async function loadDashboard() {
         try {
@@ -230,6 +231,7 @@
       }
 
       loadDashboard();
+      dashboardPollId = setInterval(loadDashboard, 5000);
     </script>
   </body>
 </html>
