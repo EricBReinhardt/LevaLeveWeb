@@ -36,7 +36,7 @@ from app.schemas import (
 from app.seed import create_session, seed_database
 
 app = FastAPI(title="Leva Leve API", version="0.1.0")
-PROJECT_ROOT = Path(__file__).resolve().parents[3]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 FRONTEND_DIR = PROJECT_ROOT / "frontend"
 
 app.add_middleware(
