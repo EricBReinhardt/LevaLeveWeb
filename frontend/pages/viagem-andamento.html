@@ -108,7 +108,8 @@
 
           <section class="overflow-hidden rounded-2xl bg-white shadow-card">
             <div class="map-shell map-grid relative min-h-[470px] p-5 md:min-h-[520px] md:p-6">
-              <div class="mx-auto flex max-w-[460px] flex-col items-center justify-center pt-16 text-center text-slate-500 md:pt-20">
+              <iframe id="route-map-frame" class="hidden h-full w-full rounded-2xl border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa da rota"></iframe>
+              <div id="map-placeholder" class="mx-auto flex max-w-[460px] flex-col items-center justify-center pt-16 text-center text-slate-500 md:pt-20">
                 <div class="relative mb-5 flex h-24 w-24 items-center justify-center">
                   <span class="absolute h-20 w-20 rounded-full border border-[#1f5dff]/25"></span>
                   <span class="absolute h-16 w-16 rounded-full border border-[#1f5dff]/35"></span>
@@ -222,6 +223,8 @@
       const notificationMessage = document.getElementById('ride-notification-message');
       const driverCallLink = document.getElementById('driver-call-link');
       const openNavigation = document.getElementById('open-navigation');
+      const routeMapFrame = document.getElementById('route-map-frame');
+      const mapPlaceholder = document.getElementById('map-placeholder');
       const cancelTripButton = document.getElementById('cancel-trip');
 
       let lastNotificationId = sessionStorage.getItem('LEVA_LEVE_LAST_NOTIFICATION_ID') || '';
@@ -328,6 +331,20 @@
 
         setDriverContact(trip.accepted_driver_name, trip.accepted_driver_phone);
 
+        if (trip.maps_embed_url) {
+          routeMapFrame.src = trip.maps_embed_url;
+          routeMapFrame.classList.remove('hidden');
+          mapPlaceholder.classList.add('hidden');
+        } else {
+          routeMapFrame.classList.add('hidden');
+          mapPlaceholder.classList.remove('hidden');
+        }
+
+        openNavigation.onclick = () => {
+          const url = trip.maps_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(trip.dropoff_address || '')}`;
+          window.open(url, '_blank', 'noopener,noreferrer');
+        };
+
         const shownProgress = trip.status === 'accepted' ? Math.max(progress, 0.18) : 0.18;
         progress = shownProgress;
         setProgress(shownProgress);
@@ -338,11 +355,6 @@
           }
           continueAnimation();
         }
-
-        openNavigation.addEventListener('click', () => {
-          const destination = encodeURIComponent(trip.dropoff_address || '');
-          window.open(`https://www.google.com/maps/search/?api=1&query=${destination}`, '_blank', 'noopener,noreferrer');
-        }, { once: true });
       }
 
       async function loadTrip() {
@@ -403,7 +415,6 @@
           }
 
           if (trip.status === 'accepted') {
-            document.getElementById('open-navigation').textContent = 'Abrir navegação';
             if (!animationFrameId) {
               continueAnimation();
             }

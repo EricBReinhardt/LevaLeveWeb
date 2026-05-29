@@ -54,6 +54,25 @@ class ClientTransportRequestIn(BaseModel):
     helper_required: bool = False
 
 
+class RouteEstimateIn(BaseModel):
+    pickup_address: str
+    dropoff_address: str
+    helper_required: bool = False
+
+
+class RouteEstimateOut(BaseModel):
+    origin: str
+    destination: str
+    distance_km: float
+    eta_minutes: int
+    base_price: float
+    helper_fee: float
+    price: float
+    maps_url: str | None = None
+    embed_url: str | None = None
+    source: str
+
+
 class ClientTripOut(BaseModel):
     id: str
     title: str
@@ -68,6 +87,8 @@ class ClientTripOut(BaseModel):
     helper_required: bool
     item_description: str
     status: str
+    maps_url: str | None = None
+    maps_embed_url: str | None = None
 
 
 class ClientTripDetailOut(ClientTripOut):
@@ -152,6 +173,8 @@ class DriverRequestOut(BaseModel):
     price: float
     helper_required: bool
     item_description: str
+    maps_url: str | None = None
+    maps_embed_url: str | None = None
 
 
 class DriverAcceptOut(BaseModel):
