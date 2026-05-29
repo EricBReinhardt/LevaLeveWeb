@@ -25,13 +25,14 @@
                 700: '#047857',
               },
               skyDeep: '#072140',
+              driverBlue: '#1f5dff',
             },
             fontFamily: {
               title: ['Sora', 'sans-serif'],
               body: ['DM Sans', 'sans-serif'],
             },
             boxShadow: {
-              card: '0 18px 40px rgba(15, 23, 42, 0.14)',
+              card: '0 12px 30px rgba(15, 23, 42, 0.10)',
             },
           },
         },
@@ -42,165 +43,171 @@
     </script>
     <script type="module" src="../assets/js/auth-guard.js?v=1"></script>
     <style>
+      .map-shell {
+        background:
+          linear-gradient(135deg, rgba(31, 93, 255, 0.08), rgba(16, 185, 129, 0.12)),
+          linear-gradient(180deg, rgba(255,255,255,0.65), rgba(245,247,255,0.95));
+      }
+
       .map-grid {
         background-image:
-          linear-gradient(rgba(255,255,255,0.14) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,255,255,0.14) 1px, transparent 1px);
-        background-size: 44px 44px;
+          linear-gradient(rgba(31, 93, 255, 0.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(31, 93, 255, 0.05) 1px, transparent 1px);
+        background-size: 42px 42px;
       }
     </style>
   </head>
-  <body class="min-h-screen bg-gradient-to-br from-skyDeep via-blue-950 to-brand-700 font-body text-white antialiased">
-    <header class="w-full border-b border-white/15 bg-white/5 backdrop-blur">
-      <div class="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-4 md:px-8">
-        <a href="minhas-viagens.html" class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20">
-          <span aria-hidden="true">←</span>
-          Minhas viagens
-        </a>
-        <div class="flex items-center gap-3">
-          <img src="../assets/brand-icon.svg" alt="Leva Leve" class="h-9 w-9 rounded-lg bg-white/15 p-1" />
+  <body class="min-h-screen bg-[#f2f4f8] font-body text-slate-900 antialiased">
+    <header class="border-b border-[#1f5dff] bg-[#1f5dff] text-white shadow-sm">
+      <div class="mx-auto flex w-full max-w-[1280px] items-center justify-between px-5 py-4 md:px-8">
+        <a href="minhas-viagens.html" class="flex items-center gap-3 text-left">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 text-white shadow-sm">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true">
+              <path d="M4 14.5V8.5C4 7.12 5.12 6 6.5 6H17.5C18.88 6 20 7.12 20 8.5V14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              <path d="M6.5 18.5H17.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              <circle cx="7.5" cy="16.5" r="1.5" fill="currentColor" />
+              <circle cx="16.5" cy="16.5" r="1.5" fill="currentColor" />
+            </svg>
+          </span>
           <div>
-            <p class="font-title text-xl font-bold">Leva Leve</p>
-            <p class="text-xs text-blue-100">Viagem em andamento</p>
+            <p class="font-title text-lg font-extrabold leading-none">Leva Leve</p>
+            <p class="text-xs text-white/80">Viagem em andamento</p>
           </div>
+        </a>
+
+        <div id="trip-total-card" class="rounded-xl bg-white/14 px-4 py-2.5 text-right backdrop-blur-sm">
+          <p class="text-[10px] uppercase tracking-[0.22em] text-white/75">Ganho desta viagem</p>
+          <p id="price-value-top" class="font-title text-lg font-extrabold">R$ --</p>
         </div>
       </div>
     </header>
 
-    <main class="mx-auto max-w-7xl px-6 py-8 md:px-8">
-      <div id="ride-notification" class="mb-6 hidden rounded-2xl border border-emerald-300/40 bg-emerald-500/20 px-5 py-4 shadow-card backdrop-blur">
-        <p class="text-xs font-bold uppercase tracking-[0.3em] text-emerald-100">Notificação</p>
-        <p id="ride-notification-title" class="mt-1 font-title text-2xl font-extrabold text-white">Corrida aceita</p>
-        <p id="ride-notification-message" class="mt-1 text-sm text-emerald-50">Seu motorista já confirmou a viagem.</p>
+    <main class="mx-auto max-w-[1280px] px-5 py-5 md:px-8 md:py-6">
+      <div id="ride-notification" class="mb-4 hidden rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 shadow-card">
+        <p id="ride-notification-title" class="font-semibold">Atualização da corrida</p>
+        <p id="ride-notification-message" class="mt-1 text-emerald-700">--</p>
       </div>
 
-      <div class="grid gap-6 lg:grid-cols-12">
-        <section class="space-y-6 lg:col-span-8">
-          <section class="rounded-[2rem] border border-white/10 bg-white/10 p-5 shadow-card backdrop-blur md:p-6">
-            <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_360px]">
+        <section class="space-y-4">
+          <section class="rounded-2xl bg-[#1f5dff] px-4 py-3 text-white shadow-card md:px-5">
+            <div class="flex items-center justify-between gap-4">
               <div>
-                <p class="text-xs font-bold uppercase tracking-[0.3em] text-emerald-100">Sua viagem</p>
-                <h1 id="trip-title" class="mt-2 font-title text-4xl font-extrabold tracking-tight">Carregando viagem...</h1>
-                <p id="trip-subtitle" class="mt-2 text-lg text-blue-100">Aguardando confirmação do motorista.</p>
+                <p class="text-[11px] uppercase tracking-[0.18em] text-white/70">Indo para retirada</p>
+                <p id="progress-distance" class="font-title text-2xl font-extrabold leading-none md:text-[28px]">-- km</p>
               </div>
-              <div class="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-right">
-                <p class="text-xs text-blue-100">Status</p>
-                <p id="trip-status" class="font-title text-2xl font-extrabold">--</p>
+              <div class="text-right">
+                <p class="text-[11px] uppercase tracking-[0.18em] text-white/70">Tempo estimado</p>
+                <p id="eta-minutes" class="font-title text-2xl font-extrabold leading-none md:text-[28px]">-- min</p>
+              </div>
+            </div>
+            <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-white/20">
+              <div id="progress-bar" class="h-full w-0 rounded-full bg-black transition-[width] duration-500"></div>
+            </div>
+          </section>
+
+          <section class="overflow-hidden rounded-2xl bg-white shadow-card">
+            <div class="map-shell map-grid relative min-h-[470px] p-5 md:min-h-[520px] md:p-6">
+              <div class="mx-auto flex max-w-[460px] flex-col items-center justify-center pt-16 text-center text-slate-500 md:pt-20">
+                <div class="relative mb-5 flex h-24 w-24 items-center justify-center">
+                  <span class="absolute h-20 w-20 rounded-full border border-[#1f5dff]/25"></span>
+                  <span class="absolute h-16 w-16 rounded-full border border-[#1f5dff]/35"></span>
+                  <span class="absolute flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-md">
+                    <svg viewBox="0 0 24 24" class="h-6 w-6 text-[#1f5dff]" fill="none" aria-hidden="true">
+                      <path d="M21 3L13 21L10 13L2 10L21 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                    </svg>
+                  </span>
+                </div>
+                <p class="text-lg font-medium text-slate-500">Navegação GPS ativa</p>
+                <p class="mt-1 text-sm text-slate-400">Siga as instruções para chegar ao destino</p>
+              </div>
+
+              <div class="absolute bottom-5 right-5">
+                <button id="open-navigation" class="inline-flex items-center gap-2 rounded-xl bg-[#1f5dff] px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-[#1f5dff]/20 transition hover:bg-[#184fe0]">
+                  <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" aria-hidden="true">
+                    <path d="M21 3L13 21L10 13L2 10L21 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                  </svg>
+                  Abrir navegação
+                </button>
               </div>
             </div>
           </section>
 
-          <section class="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/35 shadow-card">
-            <div class="map-grid relative min-h-[440px] p-5 md:p-6">
-              <div class="absolute left-6 top-6 rounded-full bg-sky-400/20 px-3 py-1 text-xs font-bold uppercase tracking-[0.28em] text-sky-100">Mapa ao vivo</div>
-              <svg viewBox="0 0 900 520" class="h-full w-full" aria-hidden="true">
-                <defs>
-                  <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#10B981" />
-                    <stop offset="100%" stop-color="#38BDF8" />
-                  </linearGradient>
-                  <filter id="glow">
-                    <feGaussianBlur stdDeviation="4" result="blur" />
-                    <feMerge>
-                      <feMergeNode in="blur" />
-                      <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                  </filter>
-                </defs>
+          <section class="rounded-2xl bg-white p-4 shadow-card md:p-5">
+            <h2 class="text-base font-extrabold text-slate-900">Trajeto da viagem</h2>
+            <div class="mt-4 grid gap-3 md:grid-cols-2">
+              <article class="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4">
+                <div class="flex items-center gap-2 text-sm font-semibold text-emerald-700">
+                  <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+                  Ponto de coleta
+                </div>
+                <p id="pickup-address" class="mt-3 text-sm font-semibold text-slate-900">--</p>
+                <p id="pickup-extra" class="mt-1 text-xs text-slate-500">--</p>
+                <p class="mt-3 text-xs text-emerald-700">• Endereço confirmado</p>
+              </article>
 
-                <path d="M140 380C210 300 275 290 355 300C450 312 480 220 560 188C655 150 700 168 780 120" fill="none" stroke="rgba(148, 163, 184, 0.35)" stroke-width="34" stroke-linecap="round" />
-                <path d="M140 380C210 300 275 290 355 300C450 312 480 220 560 188C655 150 700 168 780 120" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="18" stroke-linecap="round" stroke-dasharray="28 18" />
-                <path id="route-line" d="M140 380C210 300 275 290 355 300C450 312 480 220 560 188C655 150 700 168 780 120" fill="none" stroke="url(#routeGradient)" stroke-width="10" stroke-linecap="round" filter="url(#glow)" />
-
-                <g transform="translate(140 380)">
-                  <circle r="22" fill="rgba(16,185,129,0.22)" />
-                  <circle r="10" fill="#10B981" />
-                </g>
-
-                <g transform="translate(780 120)">
-                  <circle r="24" fill="rgba(14,165,233,0.22)" />
-                  <circle r="11" fill="#38BDF8" />
-                </g>
-
-                <g id="driver-marker" transform="translate(140 380)">
-                  <circle r="18" fill="#ffffff" opacity="0.9" />
-                  <circle r="10" fill="#0f172a" />
-                  <path d="M-6 1L0 -8L6 1L0 9Z" fill="#10B981" />
-                </g>
-              </svg>
-
-              <div class="absolute bottom-6 left-6 right-6 grid gap-3 md:grid-cols-3">
-                <article class="rounded-2xl border border-white/10 bg-slate-950/60 p-4 backdrop-blur">
-                  <p class="text-xs uppercase tracking-[0.22em] text-blue-100">Origem</p>
-                  <p id="pickup-address" class="mt-1 font-semibold text-white">--</p>
-                  <p id="pickup-extra" class="text-sm text-slate-300">--</p>
-                </article>
-                <article class="rounded-2xl border border-white/10 bg-slate-950/60 p-4 backdrop-blur">
-                  <p class="text-xs uppercase tracking-[0.22em] text-blue-100">Motorista</p>
-                  <p id="driver-name" class="mt-1 font-semibold text-white">--</p>
-                  <p id="driver-info" class="text-sm text-slate-300">Pronto para contato</p>
-                </article>
-                <article class="rounded-2xl border border-white/10 bg-slate-950/60 p-4 backdrop-blur">
-                  <p class="text-xs uppercase tracking-[0.22em] text-blue-100">Destino</p>
-                  <p id="dropoff-address" class="mt-1 font-semibold text-white">--</p>
-                  <p id="dropoff-extra" class="text-sm text-slate-300">--</p>
-                </article>
-              </div>
+              <article class="rounded-2xl border border-slate-200 bg-white p-4">
+                <div class="flex items-center gap-2 text-sm font-semibold text-red-700">
+                  <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
+                  Ponto de entrega
+                </div>
+                <p id="dropoff-address" class="mt-3 text-sm font-semibold text-slate-900">--</p>
+                <p id="dropoff-extra" class="mt-1 text-xs text-slate-500">--</p>
+                <p class="mt-3 text-xs text-emerald-700">• 8.5 km de origem</p>
+              </article>
             </div>
           </section>
         </section>
 
-        <aside class="space-y-6 lg:col-span-4">
-          <section class="rounded-[2rem] border border-white/10 bg-white text-slate-900 shadow-card">
-            <div class="border-b border-slate-200 px-5 py-5">
-              <p class="text-xs font-bold uppercase tracking-[0.28em] text-brand-700">Resumo da corrida</p>
-              <h2 class="mt-1 font-title text-2xl font-extrabold" id="trip-summary-title">--</h2>
-            </div>
-            <div class="space-y-4 px-5 py-5">
+        <aside class="space-y-4">
+          <section class="rounded-2xl bg-white p-4 shadow-card">
+            <p class="text-sm font-bold text-slate-900">Informações do motorista</p>
+            <div class="mt-4 flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3">
+              <div class="flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 text-slate-700">
+                <svg viewBox="0 0 24 24" class="h-6 w-6" fill="currentColor" aria-hidden="true">
+                  <path d="M12 12c2.76 0 5-2.46 5-5.5S14.76 1 12 1 7 3.46 7 6.5 9.24 12 12 12Zm0 2c-4.42 0-8 2.91-8 6.5V22h16v-1.5c0-3.59-3.58-6.5-8-6.5Z" />
+                </svg>
+              </div>
               <div>
-                <div class="flex items-center justify-between text-sm text-slate-500">
-                  <span>Progresso</span>
-                  <span id="progress-label">--%</span>
-                </div>
-                <div class="mt-2 h-3 overflow-hidden rounded-full bg-slate-100">
-                  <div id="progress-bar" class="h-full w-0 rounded-full bg-gradient-to-r from-brand-500 to-sky-500 transition-[width] duration-500"></div>
-                </div>
+                <p id="driver-name" class="font-semibold text-slate-900">--</p>
+                <p class="text-xs text-slate-500">Motorista</p>
               </div>
-              <div class="grid gap-3 sm:grid-cols-2">
-                <div class="rounded-2xl bg-slate-50 p-4">
-                  <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Tempo estimado</p>
-                  <p id="eta-minutes" class="mt-1 font-title text-3xl font-extrabold text-slate-900">--</p>
-                </div>
-                <div class="rounded-2xl bg-slate-50 p-4">
-                  <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Distância</p>
-                  <p id="distance-km" class="mt-1 font-title text-3xl font-extrabold text-slate-900">--</p>
-                </div>
-              </div>
-              <div class="rounded-2xl bg-brand-50 p-4 text-brand-700">
-                <p class="text-xs font-bold uppercase tracking-[0.2em]">Pagamento confirmado</p>
-                <p id="price-value" class="mt-1 font-title text-3xl font-extrabold">R$ --</p>
-              </div>
+            </div>
+            <div class="mt-3 grid grid-cols-2 gap-2">
+              <a id="driver-call-link" href="#" class="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700">Ligar</a>
+              <button class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Mensagem</button>
             </div>
           </section>
 
-          <section class="rounded-[2rem] border border-white/10 bg-white/10 p-5 text-white shadow-card backdrop-blur">
-            <h3 class="font-title text-2xl font-extrabold">Contato direto</h3>
-            <p class="mt-2 text-sm text-blue-100">Aqui você liga para o motorista responsável pela sua corrida.</p>
-            <div class="mt-4 grid gap-3 sm:grid-cols-2">
-              <div class="rounded-2xl bg-white/10 p-4">
-                <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Motorista</p>
-                <p id="driver-name-side" class="mt-1 font-semibold">--</p>
-              </div>
-              <div class="rounded-2xl bg-white/10 p-4">
-                <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Telefone</p>
-                <p id="driver-phone" class="mt-1 font-semibold">--</p>
-              </div>
-            </div>
-            <div class="mt-4 grid gap-3 sm:grid-cols-2">
-              <a id="driver-call-link" href="#" class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-brand-700">📞 Ligar para motorista</a>
-              <button class="rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/20">💬 Mensagem</button>
+          <section class="rounded-2xl border border-[#cfe0ff] bg-[#eef5ff] p-4 shadow-card">
+            <p class="text-sm font-bold text-slate-900">Itens para transportar</p>
+            <ul class="mt-3 space-y-2 text-sm text-slate-700">
+              <li id="item-description">--</li>
+              <li id="helper-required">--</li>
+              <li id="distance-summary">--</li>
+            </ul>
+          </section>
+
+          <section class="rounded-2xl bg-white p-4 shadow-card">
+            <p class="text-sm font-bold text-slate-900">Ações rápidas</p>
+            <div class="mt-3 space-y-2">
+              <button class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-left text-sm transition hover:bg-slate-50">Ver detalhes da corrida</button>
+              <button class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-left text-sm transition hover:bg-slate-50">Entrar em contato</button>
+              <button id="cancel-trip" class="w-full rounded-lg bg-rose-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-rose-700">Cancelar corrida</button>
             </div>
           </section>
+
+          <section class="rounded-2xl bg-white p-4 shadow-card">
+            <p class="text-sm font-bold text-slate-900">Informações da viagem</p>
+            <div class="mt-3 space-y-2 text-sm text-slate-600">
+              <div class="flex justify-between gap-3"><span>Distância total</span><strong id="distance-km" class="text-slate-900">--</strong></div>
+              <div class="flex justify-between gap-3"><span>Tempo estimado</span><strong id="eta-copy" class="text-slate-900">--</strong></div>
+              <div class="flex justify-between gap-3"><span>Com ajudante</span><strong id="helper-copy" class="text-slate-900">--</strong></div>
+              <div class="flex justify-between gap-3"><span>Ganho</span><strong id="price-value" class="text-emerald-700">R$ --</strong></div>
+            </div>
+          </section>
+
+          <button class="mx-auto block text-xs font-semibold text-red-500 transition hover:text-red-600">Reportar problema</button>
         </aside>
       </div>
     </main>
@@ -210,27 +217,26 @@
 
       const params = new URLSearchParams(window.location.search);
       const requestId = params.get('request');
-      const rideNotification = document.getElementById('ride-notification');
-      const rideNotificationTitle = document.getElementById('ride-notification-title');
-      const rideNotificationMessage = document.getElementById('ride-notification-message');
-      const driverMarker = document.getElementById('driver-marker');
-      const routePath = document.getElementById('route-line');
+      const notificationBox = document.getElementById('ride-notification');
+      const notificationTitle = document.getElementById('ride-notification-title');
+      const notificationMessage = document.getElementById('ride-notification-message');
       const driverCallLink = document.getElementById('driver-call-link');
+      const openNavigation = document.getElementById('open-navigation');
+      const cancelTripButton = document.getElementById('cancel-trip');
 
-      const pathLength = routePath.getTotalLength();
-      let activeTrip = null;
-      let progress = 0.12;
-      let animationFrameId = null;
       let lastNotificationId = sessionStorage.getItem('LEVA_LEVE_LAST_NOTIFICATION_ID') || '';
+      let activeTrip = null;
+      let animationFrameId = null;
+      let progress = 0.18;
 
       function statusLabel(status) {
-        const map = {
+        const labels = {
           available: 'Aguardando motorista',
           accepted: 'Motorista a caminho',
           completed: 'Corrida concluída',
           canceled: 'Corrida cancelada',
         };
-        return map[status] || 'Atualizando';
+        return labels[status] || 'Atualizando';
       }
 
       function splitAddress(address) {
@@ -241,8 +247,12 @@
         };
       }
 
+      function phoneDigits(value) {
+        return String(value || '').replace(/[^0-9+]/g, '');
+      }
+
       function showNotification(notification) {
-        if (!notification) {
+        if (!notification || !notification.message) {
           return;
         }
 
@@ -255,9 +265,27 @@
           sessionStorage.setItem('LEVA_LEVE_LAST_NOTIFICATION_ID', notification.id);
         }
 
-        rideNotificationTitle.textContent = notification.title || 'Corrida aceita';
-        rideNotificationMessage.textContent = notification.message || 'Seu motorista confirmou a viagem.';
-        rideNotification.classList.remove('hidden');
+        notificationTitle.textContent = notification.title || 'Atualização da corrida';
+        notificationMessage.textContent = notification.message;
+        notificationBox.classList.remove('hidden');
+      }
+
+      function setProgress(value) {
+        const width = Math.max(12, Math.min(94, Math.round(value * 100)));
+        document.getElementById('progress-bar').style.width = `${width}%`;
+      }
+
+      function continueAnimation() {
+        if (!activeTrip || activeTrip.status !== 'accepted') {
+          return;
+        }
+
+        progress += 0.0009;
+        if (progress > 0.92) {
+          progress = 0.92;
+        }
+        setProgress(progress);
+        animationFrameId = requestAnimationFrame(continueAnimation);
       }
 
       function redirectToTripsSoon() {
@@ -266,34 +294,8 @@
         }, 1600);
       }
 
-      function setMapPosition(value) {
-        const point = routePath.getPointAtLength(pathLength * value);
-        driverMarker.setAttribute('transform', `translate(${point.x} ${point.y})`);
-      }
-
-      function animateMap() {
-        if (!activeTrip || activeTrip.status !== 'accepted') {
-          setMapPosition(0.12);
-          return;
-        }
-
-        progress += 0.0008;
-        if (progress > 0.94) {
-          progress = 0.94;
-        }
-        setMapPosition(progress);
-        animationFrameId = requestAnimationFrame(animateMap);
-      }
-
-      function phoneDigits(value) {
-        return String(value || '').replace(/[^0-9+]/g, '');
-      }
-
       function setDriverContact(driverName, driverPhone) {
         document.getElementById('driver-name').textContent = driverName || 'Motorista designado';
-        document.getElementById('driver-name-side').textContent = driverName || 'Motorista designado';
-        document.getElementById('driver-phone').textContent = driverPhone || 'Sem telefone disponível';
-        document.getElementById('driver-info').textContent = driverPhone ? 'Pronto para contato' : 'Aguardando telefone do motorista';
 
         if (driverPhone) {
           driverCallLink.href = `tel:${phoneDigits(driverPhone)}`;
@@ -304,10 +306,76 @@
         }
       }
 
+      function updateTripView(trip) {
+        activeTrip = trip;
+        const pickup = splitAddress(trip.pickup_address);
+        const dropoff = splitAddress(trip.dropoff_address);
+
+        document.getElementById('progress-distance').textContent = `${Number(trip.distance_km).toFixed(1)} km`;
+        document.getElementById('eta-minutes').textContent = `${trip.eta_minutes} min`;
+        document.getElementById('pickup-address').textContent = pickup.primary;
+        document.getElementById('pickup-extra').textContent = pickup.extra;
+        document.getElementById('dropoff-address').textContent = dropoff.primary;
+        document.getElementById('dropoff-extra').textContent = dropoff.extra;
+        document.getElementById('item-description').textContent = trip.item_description || 'Sem detalhes adicionais';
+        document.getElementById('helper-required').textContent = trip.helper_required ? '• Ajudante solicitado' : '• Sem ajudante';
+        document.getElementById('distance-summary').textContent = `• ${Number(trip.distance_km).toFixed(1)} km de trajeto`;
+        document.getElementById('distance-km').textContent = `${Number(trip.distance_km).toFixed(1)} km`;
+        document.getElementById('eta-copy').textContent = `${trip.eta_minutes} min`;
+        document.getElementById('helper-copy').textContent = trip.helper_required ? 'Sim' : 'Nao';
+        document.getElementById('price-value').textContent = `R$ ${Number(trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        document.getElementById('price-value-top').textContent = `R$ ${Number(trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+        setDriverContact(trip.accepted_driver_name, trip.accepted_driver_phone);
+
+        const shownProgress = trip.status === 'accepted' ? Math.max(progress, 0.18) : 0.18;
+        progress = shownProgress;
+        setProgress(shownProgress);
+
+        if (trip.status === 'accepted') {
+          if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+          }
+          continueAnimation();
+        }
+
+        openNavigation.addEventListener('click', () => {
+          const destination = encodeURIComponent(trip.dropoff_address || '');
+          window.open(`https://www.google.com/maps/search/?api=1&query=${destination}`, '_blank', 'noopener,noreferrer');
+        }, { once: true });
+      }
+
       async function loadTrip() {
         if (!requestId) {
-          document.getElementById('trip-title').textContent = 'Solicitação não encontrada';
-          document.getElementById('trip-subtitle').textContent = 'Volte para suas viagens e abra uma corrida válida.';
+          document.getElementById('progress-distance').textContent = '-- km';
+          document.getElementById('eta-minutes').textContent = '-- min';
+          document.getElementById('pickup-address').textContent = 'Solicitação não encontrada';
+          return;
+        }
+
+        try {
+          const trip = await request(`/client/requests/${requestId}`);
+          document.querySelector('title').textContent = trip.title ? `Leva Leve | ${trip.title}` : 'Leva Leve | Viagem em andamento';
+          notificationMessage.textContent = 'Corrida carregada com sucesso.';
+          updateTripView(trip);
+
+          const storedNotification = sessionStorage.getItem('LEVA_LEVE_LAST_NOTIFICATION');
+          if (storedNotification) {
+            try {
+              showNotification(JSON.parse(storedNotification));
+              sessionStorage.removeItem('LEVA_LEVE_LAST_NOTIFICATION');
+            } catch {
+              sessionStorage.removeItem('LEVA_LEVE_LAST_NOTIFICATION');
+            }
+          }
+        } catch (error) {
+          document.getElementById('pickup-address').textContent = 'Falha ao carregar a corrida';
+          document.getElementById('dropoff-address').textContent = error.message || 'Nao foi possivel buscar os dados da corrida.';
+        }
+      }
+
+      async function refreshTrip() {
+        if (!requestId) {
           return;
         }
 
@@ -315,62 +383,59 @@
           const trip = await request(`/client/requests/${requestId}`);
           activeTrip = trip;
 
-          const pickup = splitAddress(trip.pickup_address);
-          const dropoff = splitAddress(trip.dropoff_address);
-          const accepted = trip.status === 'accepted';
-          const completed = trip.status === 'completed';
-
-          document.getElementById('trip-title').textContent = trip.title || 'Sua corrida';
-          document.getElementById('trip-subtitle').textContent = accepted
-            ? `Motorista ${trip.accepted_driver_name || 'confirmado'} a caminho.`
-            : completed
-              ? 'Sua corrida foi concluída.'
-              : 'Aguardando confirmação do motorista.';
-          document.getElementById('trip-status').textContent = statusLabel(trip.status);
-          document.getElementById('trip-summary-title').textContent = trip.title || 'Corrida em andamento';
-          document.getElementById('pickup-address').textContent = pickup.primary;
-          document.getElementById('pickup-extra').textContent = pickup.extra;
-          document.getElementById('dropoff-address').textContent = dropoff.primary;
-          document.getElementById('dropoff-extra').textContent = dropoff.extra;
-          setDriverContact(trip.accepted_driver_name, trip.accepted_driver_phone);
+          document.getElementById('progress-distance').textContent = `${Number(trip.distance_km).toFixed(1)} km`;
           document.getElementById('eta-minutes').textContent = `${trip.eta_minutes} min`;
-          document.getElementById('distance-km').textContent = `${Number(trip.distance_km).toFixed(1)} km`;
-          document.getElementById('price-value').textContent = `R$ ${Number(trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+          document.getElementById('price-value-top').textContent = `R$ ${Number(trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-          const shownProgress = completed ? 1 : accepted ? Math.max(progress, 0.24) : 0.12;
-          progress = shownProgress;
-          document.getElementById('progress-label').textContent = `${Math.round(shownProgress * 100)}%`;
-          document.getElementById('progress-bar').style.width = `${Math.round(shownProgress * 100)}%`;
-          setMapPosition(shownProgress);
-
-          if (accepted) {
-            animateMap();
-          } else if (animationFrameId) {
-            cancelAnimationFrame(animationFrameId);
-          }
-
-          if (completed) {
+          if (trip.status === 'completed') {
+            setProgress(1);
+            showNotification({
+              id: `completed-${requestId}`,
+              title: 'Corrida concluída',
+              message: 'Sua viagem foi finalizada e já está no histórico.',
+            });
+            if (animationFrameId) {
+              cancelAnimationFrame(animationFrameId);
+              animationFrameId = null;
+            }
             redirectToTripsSoon();
+            return;
           }
 
-          showNotification(trip.notification || null);
+          if (trip.status === 'accepted') {
+            document.getElementById('open-navigation').textContent = 'Abrir navegação';
+            if (!animationFrameId) {
+              continueAnimation();
+            }
+          }
         } catch (error) {
-          document.getElementById('trip-title').textContent = 'Não foi possível carregar a viagem';
-          document.getElementById('trip-subtitle').textContent = error.message || 'Tente novamente em instantes.';
-          document.getElementById('trip-status').textContent = '--';
-          document.getElementById('trip-summary-title').textContent = 'Erro ao carregar';
-          document.getElementById('progress-label').textContent = '0%';
-          document.getElementById('progress-bar').style.width = '0%';
+          console.warn(error.message);
         }
       }
 
-      loadTrip();
+      cancelTripButton.addEventListener('click', async () => {
+        if (!requestId) {
+          return;
+        }
 
-      if (sessionStorage.getItem('LEVA_LEVE_LAST_NOTIFICATION')) {
+        if (!window.confirm('Deseja cancelar esta corrida?')) {
+          return;
+        }
+
         try {
-          showNotification(JSON.parse(sessionStorage.getItem('LEVA_LEVE_LAST_NOTIFICATION')));
-        } catch {}
-      }
+          cancelTripButton.disabled = true;
+          cancelTripButton.textContent = 'Cancelando...';
+          await request(`/client/requests/${requestId}/cancel`, { method: 'POST' });
+          window.location.href = 'minhas-viagens.html';
+        } catch (error) {
+          cancelTripButton.disabled = false;
+          cancelTripButton.textContent = 'Cancelar corrida';
+          alert(error.message || 'Nao foi possivel cancelar a corrida.');
+        }
+      });
+
+      loadTrip();
+      setInterval(refreshTrip, 5000);
     </script>
   </body>
 </html>
