@@ -1,14 +1,9 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/api/index"
-    }
+  "version": 2,
+  "builds": [
+    { "src": "api/index.py", "use": "@vercel/python" }
   ],
-  "functions": {
-    "api/**/*.py": {
-      "excludeFiles": "{**/__pycache__/**,**/*.pyc,.git/**,.venv/**}"
-    }
-  }
+  "routes": [
+    { "src": "/(.*)", "dest": "/api/index.py" }
+  ]
 }
