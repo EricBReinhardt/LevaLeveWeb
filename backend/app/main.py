@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 from fastapi import Depends, FastAPI, Header, HTTPException, status
 from fastapi import Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from fastapi.responses import JSONResponse
 
 from app.core.config import settings
 from app.db.base import Base
@@ -34,6 +36,8 @@ from app.schemas import (
 from app.seed import create_session, seed_database
 
 app = FastAPI(title="Leva Leve API", version="0.1.0")
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+FRONTEND_DIR = PROJECT_ROOT / "frontend"
 
 app.add_middleware(
     CORSMiddleware,
@@ -206,6 +210,25 @@ def on_startup() -> None:
     ensure_transport_request_completed_at_column()
     with SessionLocal() as db:
         seed_database(db)
+
+
+app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIR / "assets")), name="assets")
+app.mount("/pages", StaticFiles(directory=str(FRONTEND_DIR / "pages")), name="pages")
+
+
+@app.get("/", include_in_schema=False)
+def frontend_index() -> HTMLResponse:
+    return FileResponse(FRONTEND_DIR / "index.html", media_type="text/html")
+
+
+@app.get("/index.html", include_in_schema=False)
+def frontend_index_alias() -> HTMLResponse:
+    return FileResponse(FRONTEND_DIR / "index.html", media_type="text/html")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def frontend_favicon() -> FileResponse:
+    return FileResponse(FRONTEND_DIR / "assets" / "brand-icon.svg", media_type="image/svg+xml")
 
 
 @app.exception_handler(Exception)

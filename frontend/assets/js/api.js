@@ -8,7 +8,7 @@ function defaultApiBase() {
     return 'http://localhost:8000';
   }
 
-  return `${location.origin}/api`;
+  return location.origin;
 }
 
 const API_BASE = defaultApiBase();

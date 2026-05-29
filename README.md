@@ -18,7 +18,7 @@ Interface em HTML + Tailwind CSS com as telas do fluxo de cliente e motorista.
 
 ## Backend
 
-API em Python com FastAPI. O frontend e a API podem ser publicados no Vercel no mesmo repositório.
+API em Python com FastAPI. O frontend e a API rodam juntos no Vercel no mesmo repositório.
 
 ### Estrutura
 
@@ -37,10 +37,9 @@ API em Python com FastAPI. O frontend e a API podem ser publicados no Vercel no 
 ## Deploy no Vercel
 
 1. A raiz do projeto no Vercel deve apontar para este repositório inteiro.
-2. O build command deve executar `python scripts/build_frontend.py`.
-3. O output directory deve ser `dist`.
-4. A API fica em `api/[...path].py` e responde em `/api/*`.
-5. Defina `DATABASE_URL` nas variaveis de ambiente do projeto.
+2. O projeto usa a API Python em `api/index.py`, que carrega o app principal.
+3. Defina `DATABASE_URL` nas variaveis de ambiente do projeto.
+4. O frontend e os assets sao servidos pelo proprio FastAPI a partir da pasta `frontend/`.
 
 ## Contas de teste
 
