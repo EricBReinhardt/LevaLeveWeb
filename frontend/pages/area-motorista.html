@@ -216,7 +216,7 @@
                       </div>
                     </div>
                     <div class="text-right">
-                      <p class="font-title text-2xl font-extrabold text-brand-700">R$ ${item.price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                      <p class="font-title text-2xl font-extrabold text-brand-700">R$ ${(item.driver_earnings || item.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                       <p class="text-sm text-slate-500">${item.distance_km.toFixed(1)} km de trajeto</p>
                     </div>
                   </div>

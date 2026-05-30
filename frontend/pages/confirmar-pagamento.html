@@ -166,7 +166,7 @@
             </div>
 
             <div class="mt-4 border-t border-slate-200 pt-4">
-              <p class="font-bold text-slate-800">Distancia total: <span id="distance-total" class="text-brand-700">-- km</span></p>
+              <p class="font-bold text-slate-800">Distancia total: <span id="distance-total" class="text-brand-700"></span></p>
             </div>
           </section>
 
@@ -197,8 +197,12 @@
 
             <div class="mt-4 rounded-xl bg-white/15 p-4 text-sm">
               <div class="flex items-center justify-between border-b border-white/20 pb-2">
-                <span id="breakdown-distance-label">Transporte</span>
-                <span id="breakdown-distance-price" class="font-bold money-display small">R$ --</span>
+                <span id="breakdown-distance-label">Subtotal do transporte</span>
+                <span id="breakdown-distance-price" class="font-bold money-display small"></span>
+              </div>
+              <div class="mt-2 flex items-center justify-between border-b border-white/20 pb-2">
+                <span>Taxa do app</span>
+                <span id="breakdown-appfee-price" class="font-bold money-display small"></span>
               </div>
               <div class="mt-2 flex items-center justify-between border-b border-white/20 pb-2">
                 <span>Ajudante</span>
@@ -246,24 +250,28 @@
       import { request } from '../assets/js/api.js';
 
       const params = new URLSearchParams(window.location.search);
-      const distanceKm = Number(params.get('distance_km') || '0');
+      const distanceKmRaw = params.get('distance_km');
+      const distanceKm = distanceKmRaw ? Number(distanceKmRaw) : null;
       const etaMinutes = Number(params.get('eta_minutes') || '0');
       const price = Number(params.get('price') || '0');
+      const serviceSubtotal = Number(params.get('service_subtotal') || '0');
+      const appFee = Number(params.get('app_fee') || '0');
       const helperRequired = params.get('helper_required') === 'true';
 
       document.getElementById('pickup-address').textContent = params.get('pickup_street') || '--';
       document.getElementById('pickup-city').textContent = [params.get('pickup_city'), params.get('pickup_complement'), params.get('pickup_floor') ? `${params.get('pickup_floor')}º andar` : ''].filter(Boolean).join(' • ') || '--';
       document.getElementById('dropoff-address').textContent = params.get('dropoff_address') || '--';
       document.getElementById('dropoff-extra').textContent = [params.get('dropoff_complement'), params.get('dropoff_floor') ? `${params.get('dropoff_floor')}º andar` : ''].filter(Boolean).join(' • ') || '--';
-      document.getElementById('distance-total').textContent = `${distanceKm.toFixed(1)} km`;
+      document.getElementById('distance-total').textContent = distanceKm === null || Number.isNaN(distanceKm) ? '' : `${distanceKm.toFixed(1)} km`;
       document.getElementById('vehicle-name').textContent = params.get('item_title') || 'Item informado';
       document.getElementById('vehicle-capacity').textContent = helperRequired ? 'Capacidade com ajudante' : 'Capacidade sem ajudante';
       document.getElementById('eta-text').textContent = `${etaMinutes || '--'} minutos`;
       document.getElementById('helper-text').textContent = helperRequired ? 'Ajudante incluso' : 'Sem ajudante';
       document.getElementById('helper-subtext').textContent = helperRequired ? '1 pessoa para auxiliar' : 'Sem custo adicional';
       document.getElementById('total-price').textContent = `R$ ${price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      document.getElementById('breakdown-distance-label').textContent = `Transporte (${distanceKm.toFixed(1)} km)`;
-      document.getElementById('breakdown-distance-price').textContent = `R$ ${(price - (helperRequired ? 30 : 0)).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('breakdown-distance-label').textContent = distanceKm === null || Number.isNaN(distanceKm) ? 'Subtotal do transporte' : `Subtotal do transporte (${distanceKm.toFixed(1)} km)`;
+      document.getElementById('breakdown-distance-price').textContent = serviceSubtotal > 0 ? `R$ ${serviceSubtotal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '';
+      document.getElementById('breakdown-appfee-price').textContent = appFee > 0 ? `R$ ${appFee.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '';
       document.getElementById('breakdown-helper-price').textContent = helperRequired ? 'R$ 30,00' : 'R$ 0,00';
       document.getElementById('breakdown-total').textContent = `R$ ${price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 

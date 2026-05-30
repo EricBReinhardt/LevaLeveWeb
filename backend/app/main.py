@@ -40,6 +40,7 @@ from app.schemas import (
 from app.seed import create_session, seed_database
 
 SESSION_COOKIE = "leva_leve_session"
+APP_FEE_RATE = 0.20
 
 PRODUCTION = os.getenv("VERCEL") == "1" or os.getenv("ENVIRONMENT") == "production" or os.getenv("NODE_ENV") == "production"
 logger = logging.getLogger(__name__)
@@ -141,6 +142,7 @@ def request_payload(
         "distance_km": request.distance_km,
         "eta_minutes": request.eta_minutes,
         "price": request.price,
+        "driver_earnings": calculate_driver_earnings(request.price),
         "helper_required": request.helper_required,
         "item_description": request.item_description,
         "status": request.status.value,
@@ -158,7 +160,12 @@ def calculate_transport_price(item_count: int, helper_required: bool) -> float:
     extra_item_price = 18.00
     helper_price = 30.00 if helper_required else 0.0
     extra_items = max(0, item_count - included_items)
-    return round(base_price + extra_items * extra_item_price + helper_price, 2)
+    subtotal = base_price + extra_items * extra_item_price + helper_price
+    return round(subtotal * (1 + APP_FEE_RATE), 2)
+
+
+def calculate_driver_earnings(price: float) -> float:
+    return round(price / (1 + APP_FEE_RATE), 2)
 
 
 def notification_payload(notification: Notification | None) -> dict | None:
@@ -614,7 +621,8 @@ def complete_driver_request(request_id: str, authorization: str | None = Header(
 
     request.status = RequestStatus.completed
     request.completed_at = datetime.now(timezone.utc)
-    user.driver_profile.available_balance += request.price
+    driver_earnings = calculate_driver_earnings(request.price)
+    user.driver_profile.available_balance += driver_earnings
     user.driver_profile.trips_completed += 1
 
     client_user = db.scalar(select(User).where(User.role == UserRole.client, User.name == request.client_name))
@@ -695,6 +703,7 @@ def list_driver_requests(authorization: str | None = Header(default=None), db: S
                 "distance_km": request.distance_km,
                 "eta_minutes": request.eta_minutes,
                 "price": request.price,
+                "driver_earnings": calculate_driver_earnings(request.price),
                 "helper_required": request.helper_required,
                 "item_description": request.item_description,
             }
@@ -727,6 +736,7 @@ def get_driver_request(request_id: str, authorization: str | None = Header(defau
         "distance_km": request.distance_km,
         "eta_minutes": request.eta_minutes,
         "price": request.price,
+        "driver_earnings": calculate_driver_earnings(request.price),
         "helper_required": request.helper_required,
         "item_description": request.item_description,
     }
@@ -741,9 +751,9 @@ def driver_dashboard(authorization: str | None = Header(default=None), db: Sessi
     active_requests = db.scalars(select(TransportRequest).where(TransportRequest.status == RequestStatus.available)).all()
     completed_today = completed_today_for_driver(db, user.id)
     completed_week = completed_this_week_for_driver(db, user.id)
-    today_earnings = sum(item.price for item in completed_today)
+    today_earnings = sum(calculate_driver_earnings(item.price) for item in completed_today)
     today_trips = len(completed_today)
-    weekly_average = (sum(item.price for item in completed_week) / len(completed_week)) if completed_week else 0.0
+    weekly_average = (sum(calculate_driver_earnings(item.price) for item in completed_week) / len(completed_week)) if completed_week else 0.0
     return {
         "total_balance": user.driver_profile.available_balance,
         "today_earnings": today_earnings,
@@ -759,6 +769,7 @@ def driver_dashboard(authorization: str | None = Header(default=None), db: Sessi
                 "distance_km": item.distance_km,
                 "eta_minutes": item.eta_minutes,
                 "price": item.price,
+                "driver_earnings": calculate_driver_earnings(item.price),
                 "helper_required": item.helper_required,
                 "item_description": item.item_description,
             }

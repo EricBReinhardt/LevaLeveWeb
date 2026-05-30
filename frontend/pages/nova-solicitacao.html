@@ -181,7 +181,7 @@
 
           document.getElementById('client-name').textContent = trip.client_name || 'Cliente';
           document.getElementById('client-since').textContent = trip.client_since || '';
-          document.getElementById('trip-price').textContent = `R$ ${Number(trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+          document.getElementById('trip-price').textContent = `R$ ${Number(trip.driver_earnings || trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
           document.getElementById('distance-summary').textContent = `${Number(trip.distance_km).toFixed(1)} km • ${trip.eta_minutes} minutos`;
 
           const pickupParts = trip.pickup_address.split(' - ');
@@ -196,7 +196,7 @@
           document.getElementById('item-description').textContent = trip.item_description;
           document.getElementById('helper-info').textContent = trip.helper_required ? 'Com ajudante' : 'Sem ajudante';
           document.getElementById('eta-info').textContent = `${trip.eta_minutes} min`;
-          document.getElementById('estimated-earnings').textContent = `R$ ${Number(trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+          document.getElementById('estimated-earnings').textContent = `R$ ${Number(trip.driver_earnings || trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
           document.getElementById('earnings-distance').textContent = `• Distancia: ${Number(trip.distance_km).toFixed(1)} km`;
           document.getElementById('earnings-time').textContent = `• Tempo estimado: ${trip.eta_minutes} min`;
           document.getElementById('earnings-helper').textContent = trip.helper_required ? '• Com ajudante incluso' : '• Sem ajudante incluso';

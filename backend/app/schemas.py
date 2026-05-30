@@ -151,6 +151,7 @@ class DriverRequestOut(BaseModel):
     distance_km: float
     eta_minutes: int
     price: float
+    driver_earnings: float
     helper_required: bool
     item_description: str
 

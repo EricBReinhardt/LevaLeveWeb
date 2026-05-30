@@ -337,8 +337,9 @@
                     document.getElementById('distance-km').textContent = `${Number(trip.distance_km).toFixed(1)} km`;
                     document.getElementById('eta-copy').textContent = `${trip.eta_minutes} min`;
                     document.getElementById('helper-copy').textContent = trip.helper_required ? 'Sim' : 'Nao';
-                    document.getElementById('price-value').textContent = `R$ ${Number(trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                    document.getElementById('price-value-top').textContent = `R$ ${Number(trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    const driverEarnings = Number(trip.driver_earnings || trip.price);
+                    document.getElementById('price-value').textContent = `R$ ${driverEarnings.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    document.getElementById('price-value-top').textContent = `R$ ${driverEarnings.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                     document.getElementById('trip-total-card').classList.remove('hidden');
 
                     const contactPhone = trip.client_phone || '';
@@ -423,7 +424,7 @@
                         return;
                       }
 
-                      document.getElementById('price-value').textContent = `R$ ${Number(trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                      document.getElementById('price-value').textContent = `R$ ${Number(trip.driver_earnings || trip.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                     } catch (error) {
                       console.warn(error.message);
                     }
@@ -437,11 +438,8 @@
                     try {
                       completeTripButton.disabled = true;
                       completeTripButton.textContent = 'Finalizando...';
-                      const result = await request(`/driver/requests/${requestId}/complete`, { method: 'POST' });
-                      if (result?.notification) {
-                        showNotification(result.notification);
-                      }
-                      await refreshTrip();
+                      await request(`/driver/requests/${requestId}/complete`, { method: 'POST' });
+                      window.location.href = 'area-motorista.html';
                     } catch (error) {
                       completeTripButton.disabled = false;
                       completeTripButton.textContent = 'Finalizar entrega';

@@ -97,7 +97,7 @@
               <div class="flex items-center justify-between gap-4">
                 <div>
                   <p class="text-sm font-bold text-blue-700">Estimativa da mudança</p>
-                  <p id="price-rule" class="text-xs text-blue-600">Ate 4 itens, preco base. A partir do 5º item, +R$ 18,00 por item.</p>
+                  <p id="price-rule" class="text-xs text-blue-600">Ate 4 itens, preco base. A partir do 5º item, +R$ 18,00 por item. Taxa do app incluida.</p>
                 </div>
                 <div class="text-right">
                   <p id="estimated-price" class="text-4xl font-title font-extrabold text-blue-700">R$ 89,90</p>
@@ -187,6 +187,7 @@
         const includedItems = 4;
         const extraItemPrice = 18;
         const helperPrice = 30;
+        const appFeeRate = 0.2;
 
         if (categoria) {
           categoriaEl.textContent = categoria;
@@ -270,7 +271,9 @@
           const count = Math.max(1, cards.length);
           const extraItems = Math.max(0, count - includedItems);
           const helperRequired = helperToggle.checked;
-          const price = basePrice + extraItems * extraItemPrice + (helperRequired ? helperPrice : 0);
+          const subtotal = basePrice + extraItems * extraItemPrice + (helperRequired ? helperPrice : 0);
+          const appFee = subtotal * appFeeRate;
+          const price = subtotal + appFee;
           const items = getItems();
           const filledNames = items.map(function (itemData) { return itemData.name; }).filter(Boolean);
           const firstName = filledNames[0] || "Item informado";
@@ -295,6 +298,8 @@
             item_description: summaryText,
             item_count: String(count),
             helper_required: String(helperRequired),
+            service_subtotal: subtotal.toFixed(2),
+            app_fee: appFee.toFixed(2),
             estimated_price: price.toFixed(2),
           }).toString()}`;
         }
