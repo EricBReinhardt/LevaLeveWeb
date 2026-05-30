@@ -256,6 +256,7 @@
       const price = Number(params.get('price') || '0');
       const serviceSubtotal = Number(params.get('service_subtotal') || '0');
       const appFee = Number(params.get('app_fee') || '0');
+      const itemCount = Number(params.get('item_count') || '1');
       const helperRequired = params.get('helper_required') === 'true';
 
       document.getElementById('pickup-address').textContent = params.get('pickup_street') || '--';
@@ -310,6 +311,7 @@
               dropoff_floor: params.get('dropoff_floor') || null,
               distance_km: distanceKm,
               eta_minutes: etaMinutes,
+              item_count: itemCount,
               price: price,
               helper_required: helperRequired,
             };
