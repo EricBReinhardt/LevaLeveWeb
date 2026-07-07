@@ -754,6 +754,25 @@ def driver_dashboard(authorization: str | None = Header(default=None), db: Sessi
     today_earnings = sum(calculate_driver_earnings(item.price) for item in completed_today)
     today_trips = len(completed_today)
     weekly_average = (sum(calculate_driver_earnings(item.price) for item in completed_week) / len(completed_week)) if completed_week else 0.0
+    
+    # Build history with completed requests
+    history = [
+        {
+            "id": item.id,
+            "title": item.title,
+            "category": item.category,
+            "pickup_address": item.pickup_address,
+            "dropoff_address": item.dropoff_address,
+            "distance_km": item.distance_km,
+            "price": item.price,
+            "driver_earnings": calculate_driver_earnings(item.price),
+            "completed_at": item.completed_at.isoformat() if item.completed_at else None,
+            "rating": item.rating,
+            "client_name": item.client_profile.user.name if item.client_profile else "Cliente",
+        }
+        for item in completed_requests_for_driver(db, user.id)[:10]  # Last 10 completed trips
+    ]
+    
     return {
         "total_balance": user.driver_profile.available_balance,
         "today_earnings": today_earnings,
@@ -775,7 +794,7 @@ def driver_dashboard(authorization: str | None = Header(default=None), db: Sessi
             }
             for item in active_requests
         ],
-        "history": [],
+        "history": history,
         "stats": {
             "acceptance_rate": 0 if not active_requests and today_trips == 0 else 94,
             "completion_rate": 0 if today_trips == 0 else 98,

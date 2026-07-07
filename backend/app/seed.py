@@ -32,6 +32,9 @@ def seed_database(db: Session) -> None:
             floor="3",
         )
         db.add(client)
+    
+    if not client or not client.id:
+        db.flush()
 
     driver = db.scalar(select(User).where(User.email == "motorista.teste@levaleve.com"))
     if not driver:
@@ -59,8 +62,38 @@ def seed_database(db: Session) -> None:
         driver.driver_profile.available_balance = 0.0
         driver.driver_profile.trips_completed = 0
         db.add(driver)
+    
+    if not driver or not driver.id:
+        db.flush()
 
     db.execute(text("DELETE FROM transport_requests WHERE title = :title"), {"title": "Sofa de 3 lugares"})
+
+    # Create sample completed trips for driver history
+    now = datetime.now(timezone.utc)
+    for i in range(5):
+        existing = db.scalar(
+            select(TransportRequest).where(
+                TransportRequest.title == f"Mudança - Casa {i+1}"
+            )
+        )
+        if not existing:
+            trip = TransportRequest(
+                client_id=client.id,
+                title=f"Mudança - Casa {i+1}",
+                category="Residencial",
+                pickup_address=f"Rua A, {100 + i*10}, São Paulo, SP",
+                dropoff_address=f"Rua B, {200 + i*10}, São Paulo, SP",
+                distance_km=float(5 + i),
+                eta_minutes=30 + i*5,
+                price=150.0 + i*25,
+                status=RequestStatus.completed,
+                accepted_driver_id=driver.id,
+                completed_at=now - timedelta(hours=i*2, minutes=30),
+                rating=4.5 + (i % 5) * 0.1,
+                helper_required=False,
+                item_description=f"Móveis e pertences para mudança {i+1}",
+            )
+            db.add(trip)
 
     db.commit()
 

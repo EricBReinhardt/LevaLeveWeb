@@ -143,7 +143,7 @@
     </main>
 
     <script type="module">
-      import { request } from '../assets/js/api.js';
+      import { request, money } from '../assets/js/api.js';
 
       const setText = (id, value) => { document.getElementById(id).textContent = value; };
 
@@ -171,9 +171,28 @@
           document.getElementById('goal-bar').style.width = `${Math.min(100, (dashboard.total_balance / 4000) * 100)}%`;
           setText('weekly-goal-text', `Faltam R$ ${(4000 - dashboard.total_balance).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} para atingir sua meta semanal.`);
 
-          const requestsCount = dashboard.active_requests.length;
-          const historyEmpty = document.getElementById('earnings-history-empty');
-          historyEmpty.textContent = requestsCount ? 'Historico vazio por enquanto.' : 'Historico vazio por enquanto.';
+          // Render history
+          const historyContainer = document.getElementById('earnings-history-empty');
+          if (dashboard.history && dashboard.history.length > 0) {
+            const historyHTML = dashboard.history.map(trip => `
+              <div class="flex items-center justify-between border-b border-slate-100 py-3 last:border-0">
+                <div class="flex-1">
+                  <p class="font-semibold text-slate-900">${trip.title}</p>
+                  <p class="text-sm text-slate-500">De: ${trip.pickup_address}</p>
+                  <p class="text-sm text-slate-500">Para: ${trip.dropoff_address}</p>
+                  <p class="text-xs text-slate-400 mt-1">${trip.distance_km} km • ${new Date(trip.completed_at).toLocaleDateString('pt-BR', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                </div>
+                <div class="ml-4 text-right">
+                  <p class="font-bold text-brand-700">R$ ${trip.driver_earnings.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                  <p class="text-xs text-slate-500">${trip.rating ? `${trip.rating} ⭐` : 'Sem avaliação'}</p>
+                </div>
+              </div>
+            `).join('');
+            historyContainer.innerHTML = `<div class="space-y-0">${historyHTML}</div>`;
+          } else {
+            historyContainer.textContent = 'Nenhuma viagem completada ainda.';
+            historyContainer.className = 'mt-4 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-500';
+          }
 
           const withdrawals = document.getElementById('withdrawals-empty');
           withdrawals.textContent = 'Nenhum saque registrado ainda.';
