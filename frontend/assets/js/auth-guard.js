@@ -1,7 +1,4 @@
-import { request, setSession } from './api.js';
-
-document.documentElement.style.visibility = 'hidden';
-document.documentElement.style.opacity = '0';
+import { getStoredUser, request, setSession } from './api.js';
 
 function defaultRedirect() {
   return location.pathname.includes('/pages/') ? '../index.html' : 'index.html';
@@ -33,6 +30,17 @@ async function enforceAuth() {
   const redirect = config.redirect || defaultRedirect();
   const allowedRoles = Array.isArray(config.roles) ? config.roles : [];
 
+  const storedUser = getStoredUser();
+  if (!storedUser) {
+    redirectTo(redirect);
+    return;
+  }
+
+  if (allowedRoles.length && !allowedRoles.includes(storedUser.role)) {
+    redirectTo(config.fallback || redirect);
+    return;
+  }
+
   const user = await refreshSession();
   if (!user) {
     redirectTo(redirect);
@@ -40,14 +48,10 @@ async function enforceAuth() {
   }
 
   if (allowedRoles.length && !allowedRoles.includes(user.role)) {
+    clearSession();
     redirectTo(config.fallback || redirect);
     return;
   }
-
-  document.documentElement.style.visibility = 'visible';
-  document.documentElement.style.opacity = '1';
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  void enforceAuth();
-});
+void enforceAuth();
