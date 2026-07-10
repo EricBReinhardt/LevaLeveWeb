@@ -78,18 +78,18 @@ def seed_database(db: Session) -> None:
         )
         if not existing:
             trip = TransportRequest(
-                client_id=client.id,
                 title=f"Mudança - Casa {i+1}",
+                client_name=client.name,
+                client_since="Cliente desde 2026",
                 category="Residencial",
-                pickup_address=f"Rua A, {100 + i*10}, São Paulo, SP",
-                dropoff_address=f"Rua B, {200 + i*10}, São Paulo, SP",
+                pickup_address=f"Rua A, {100 + i*10}, Sao Paulo, SP",
+                dropoff_address=f"Rua B, {200 + i*10}, Sao Paulo, SP",
                 distance_km=float(5 + i),
                 eta_minutes=30 + i*5,
                 price=150.0 + i*25,
                 status=RequestStatus.completed,
                 accepted_driver_id=driver.id,
                 completed_at=now - timedelta(hours=i*2, minutes=30),
-                rating=4.5 + (i % 5) * 0.1,
                 helper_required=False,
                 item_description=f"Móveis e pertences para mudança {i+1}",
             )
